@@ -1,0 +1,10 @@
+numpy>=1.26.4
+opencv-python-headless
+imageio-ffmpeg>=0.5.1
+lmdb>=1.4.1
+timm>=1.0.7
+rich>=13.7.1
+albumentations>=1.4.10
+ultralytics
+tyro==0.8.5
+dill
