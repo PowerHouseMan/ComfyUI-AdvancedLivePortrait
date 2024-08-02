@@ -16,3 +16,5 @@ There are workflows and sample data.
 
 
 Thanks
+
+Original author's link https://liveportrait.github.io/
