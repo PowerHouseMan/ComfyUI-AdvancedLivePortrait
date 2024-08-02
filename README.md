@@ -37,6 +37,8 @@ Linking the driving video to 'src_images' will add facial expressions to the dri
 
 You can save and load expressions with the 'LoadExpData' 'SaveExpData' nodes.
 
+\ComfyUI\custom_nodes\ComfyUI-AdvancedLivePortrait\exp_data\  Path to the folder being saved
+
 -----
 
 Thanks
