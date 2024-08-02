@@ -33,6 +33,11 @@ They are numbered in the order they lead to the motion_link.
 
 Linking the driving video to 'src_images' will add facial expressions to the driving video.
 
+-----
+
+You can save and load expressions with the 'LoadExpData' 'SaveExpData' nodes.
+
+-----
 
 Thanks
 
