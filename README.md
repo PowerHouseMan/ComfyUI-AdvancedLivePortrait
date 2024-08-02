@@ -4,7 +4,7 @@ https://github.com/user-attachments/assets/90b78639-6477-48af-ba49-7945488df581
 Run it.
 
 
-https://unsafelink.com/https://drive.google.com/drive/folders/1UtKgzKjFAOmZkhNK-OYT0caJ_w2XAnib
+https://drive.google.com/drive/folders/1UtKgzKjFAOmZkhNK-OYT0caJ_w2XAnib
 Do not use insightface.
 You only need 'liveportait' folder.
 \ComfyUI_windows_portable\ComfyUI\models\
