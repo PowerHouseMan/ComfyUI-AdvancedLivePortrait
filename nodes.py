@@ -488,6 +488,7 @@ class AdvancedLivePortrait:
             if line == '': continue
             try:
                 cmds = line.split('=')
+                #assert len(cmds) == 2, f"(파워집돌이) 명령어오류 {i}번줄: {line}: '=' 기호가 1개 들어가야 합니다"
                 idx = int(cmds[0])
                 if idx == 0: es = ExpressionSet()
                 else: es = ExpressionSet(es = motoin_link[idx])
@@ -495,7 +496,10 @@ class AdvancedLivePortrait:
                 change = int(cmds[0])
                 keep = int(cmds[1])
             except:
-                log(f"(파워집돌이) 명령어오류 {i}번줄: {line}")
+                #log(f"(파워집돌이) 명령어오류 {i}번줄: {line}")
+                assert False, f"(파워집돌이) 명령어오류 {i}번줄: {line}"
+
+
                 return None, None
 
             total_length += change + keep
@@ -517,13 +521,13 @@ class AdvancedLivePortrait:
 
         if src_images != None:
             src_length = len(src_images)
+            if id(src_images) != id(self.src_images):
+                self.src_images = src_images
+                if 1 < src_length:
+                    self.psi_list = g_engine.prepare_source(src_images, True)
+                else:
+                    self.psi_list = [g_engine.prepare_source(src_images)]
 
-        if id(src_images) != id(self.src_images):
-            self.src_images = src_images
-            if 1 < src_length:
-                self.psi_list = g_engine.prepare_source(src_images, True)
-            else:
-                self.psi_list = [g_engine.prepare_source(src_images)]
 
         cmd_list, cmd_length = self.parsing_command(command, motion_link)
         if cmd_list == None: return (None,None)
