@@ -330,7 +330,7 @@ class SaveExpData:
     RETURN_TYPES = ("STRING",)
     RETURN_NAMES = ("file_name",)
     FUNCTION = "run"
-    CATEGORY = "파워집돌이"
+    CATEGORY = "AdvancedLivePortrait"
     OUTPUT_NODE = True
 
     def run(self, file_name, save_exp:ExpressionSet=None):
@@ -355,7 +355,7 @@ class LoadExpData:
     RETURN_TYPES = ("EXP_DATA",)
     RETURN_NAMES = ("exp",)
     FUNCTION = "run"
-    CATEGORY = "파워집돌이"
+    CATEGORY = "AdvancedLivePortrait"
 
     def run(self, file_name, ratio):
         # es = ExpressionSet()
@@ -386,7 +386,7 @@ class ExpData:
     RETURN_TYPES = ("EXP_DATA",)
     RETURN_NAMES = ("exp",)
     FUNCTION = "run"
-    CATEGORY = "파워집돌이"
+    CATEGORY = "AdvancedLivePortrait"
 
     def run(self, code1, value1, code2, value2, code3, value3, code4, value4, code5, value5, add_exp=None):
         #print(f"type(None):{type(None)}")
@@ -420,7 +420,7 @@ class PrintExpData:
     RETURN_TYPES = ("EXP_DATA",)
     RETURN_NAMES = ("exp",)
     FUNCTION = "run"
-    CATEGORY = "파워집돌이"
+    CATEGORY = "AdvancedLivePortrait"
     OUTPUT_NODE = True
 
     def run(self, cut_noise, exp = None):
@@ -469,7 +469,7 @@ class AdvancedLivePortrait:
     RETURN_NAMES = ("images",)
     FUNCTION = "run"
     OUTPUT_NODE = True
-    CATEGORY = "파워집돌이"
+    CATEGORY = "AdvancedLivePortrait"
 
     # INPUT_IS_LIST = False
     # OUTPUT_IS_LIST = (False,)
@@ -490,7 +490,6 @@ class AdvancedLivePortrait:
             if line == '': continue
             try:
                 cmds = line.split('=')
-                #assert len(cmds) == 2, f"(파워집돌이) 명령어오류 {i}번줄: {line}: '=' 기호가 1개 들어가야 합니다"
                 idx = int(cmds[0])
                 if idx == 0: es = ExpressionSet()
                 else: es = ExpressionSet(es = motoin_link[idx])
@@ -498,8 +497,7 @@ class AdvancedLivePortrait:
                 change = int(cmds[0])
                 keep = int(cmds[1])
             except:
-                #log(f"(파워집돌이) 명령어오류 {i}번줄: {line}")
-                assert False, f"(파워집돌이) 명령어오류 {i}번줄: {line}"
+                assert False, f"(AdvancedLivePortrait) Command Err Line {i}: {line}"
 
 
                 return None, None
@@ -659,7 +657,7 @@ class ExpressionEditor:
 
     OUTPUT_NODE = True
 
-    CATEGORY = "파워집돌이"
+    CATEGORY = "AdvancedLivePortrait"
 
     # INPUT_IS_LIST = False
     # OUTPUT_IS_LIST = (False,)
@@ -723,6 +721,8 @@ class ExpressionEditor:
         crop_with_fullsize = cv2.warpAffine(crop_out, psi.crop_trans_m, get_rgb_size(psi.src_rgb), cv2.INTER_LINEAR)
         out = np.clip(psi.mask_ori * crop_with_fullsize + (1 - psi.mask_ori) * psi.src_rgb, 0, 255).astype(np.uint8)
 
+        print(psi.mask_ori.shape)
+
         out_img = pil2tensor(out)
 
         filename = "fe_edit_preview.png"
@@ -736,41 +736,18 @@ class ExpressionEditor:
 
         return {"ui": {"images": results}, "result": (out_img, new_editor_link, es)}
 
-class TestNode:
-
-    def __init__(s):
-        s.pbar = comfy.utils.ProgressBar(1)
-
-    @classmethod
-    def INPUT_TYPES(s):
-        return {"required": {
-            #"images": ("IMAGE",),
-            #"test_value": ("INT", {"default": 1, "min": 1}),
-            "command": ("STRING", {"multiline": True, "default": ""}),
-        },
-        }
-
-    RETURN_TYPES = ("IMAGE",)
-    RETURN_NAMES = ("images",)
-    FUNCTION = "run"
-    OUTPUT_NODE = True
-
-    def run(self, command):
-        self.parsing_command(command)
-
-        return (None,)
-
 NODE_CLASS_MAPPINGS = {
     "AdvancedLivePortrait": AdvancedLivePortrait,
     "ExpressionEditor": ExpressionEditor,
-    "ExpData": ExpData,
     "LoadExpData": LoadExpData,
     "SaveExpData": SaveExpData,
+    "ExpData": ExpData,
     "PrintExpData:": PrintExpData,
-    #"TestNode": TestNode,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "AdvancedLivePortrait": "Advanced Live Portrait (파워집돌이)",
-    "ExpressionEditor": "Expression Editor (파워집돌이)",
+    "AdvancedLivePortrait": "Advanced Live Portrait (PHM)",
+    "ExpressionEditor": "Expression Editor (PHM)",
+    "LoadExpData": "Load Exp Data (PHM)",
+    "SaveExpData": "Save Exp Data (PHM)"
 }
