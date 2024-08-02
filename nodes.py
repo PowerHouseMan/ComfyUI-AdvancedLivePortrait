@@ -15,7 +15,6 @@ from torchvision import transforms
 from ultralytics import YOLO
 from scipy.spatial.transform import Rotation as R
 
-
 current_file_path = os.path.abspath(__file__)
 current_directory = os.path.dirname(current_file_path)
 sys.path.append(current_directory)
@@ -315,7 +314,10 @@ def logging_time(original_fn):
     return wrapper_fn
 
 
-exp_data_dir = os.path.join(current_directory, "exp_data")
+#exp_data_dir = os.path.join(current_directory, "exp_data")
+exp_data_dir = os.path.join(folder_paths.output_directory, "exp_data")
+if os.path.isdir(exp_data_dir) == False:
+    os.mkdir(exp_data_dir)
 class SaveExpData:
     @classmethod
     def INPUT_TYPES(s):
