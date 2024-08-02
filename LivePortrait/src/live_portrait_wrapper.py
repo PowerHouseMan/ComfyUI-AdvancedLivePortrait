@@ -7,7 +7,7 @@ import yaml
 from LivePortrait.src.utils.timer import Timer
 from LivePortrait.src.utils.helper import load_model, concat_feat
 from LivePortrait.src.utils.camera import headpose_pred_to_degree, get_rotation_matrix
-from config.inference_config import InferenceConfig
+from LivePortrait.src.config.inference_config import InferenceConfig
 from LivePortrait.src.utils.rprint import rlog as log
 
 

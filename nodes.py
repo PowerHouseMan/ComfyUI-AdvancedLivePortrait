@@ -19,10 +19,10 @@ from scipy.spatial.transform import Rotation as R
 current_file_path = os.path.abspath(__file__)
 current_directory = os.path.dirname(current_file_path)
 sys.path.append(current_directory)
-from .LivePortrait.src.live_portrait_wrapper import LivePortraitWrapper
-from .LivePortrait.src.utils.rprint import rlog as log
-from .LivePortrait.src.utils.camera import get_rotation_matrix
-from .config.inference_config import InferenceConfig
+from LivePortrait.src.live_portrait_wrapper import LivePortraitWrapper
+from LivePortrait.src.utils.rprint import rlog as log
+from LivePortrait.src.utils.camera import get_rotation_matrix
+from LivePortrait.src.config.inference_config import InferenceConfig
 
 def tensor2pil(image):
     return Image.fromarray(np.clip(255. * image.cpu().numpy().squeeze(), 0, 255).astype(np.uint8))
