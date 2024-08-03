@@ -17,6 +17,7 @@ This project has been registered with ComfyUI-Manager. Now you can install it au
 ## Usage
 
 The workflows and sample datas placed in '\custom_nodes\ComfyUI-AdvancedLivePortrait\sample\'
+
 -----
 
 You can add expressions to the video. See 'workflow2_advanced.json'.
