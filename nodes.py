@@ -17,11 +17,19 @@ from scipy.spatial.transform import Rotation as R
 
 current_file_path = os.path.abspath(__file__)
 current_directory = os.path.dirname(current_file_path)
-sys.path.append(current_directory)
-from LivePortrait.src.live_portrait_wrapper import LivePortraitWrapper
-from LivePortrait.src.utils.rprint import rlog as log
-from LivePortrait.src.utils.camera import get_rotation_matrix
-from LivePortrait.src.config.inference_config import InferenceConfig
+#sys.path.append(current_directory)
+from .LivePortrait.live_portrait_wrapper import LivePortraitWrapper
+from .LivePortrait.utils.rprint import rlog as log
+from .LivePortrait.utils.camera import get_rotation_matrix
+from .LivePortrait.config.inference_config import InferenceConfig
+
+from .LivePortrait.modules.spade_generator import SPADEDecoder
+from .LivePortrait.modules.warping_network import WarpingNetwork
+from .LivePortrait.modules.motion_extractor import MotionExtractor
+from .LivePortrait.modules.appearance_feature_extractor import AppearanceFeatureExtractor
+from .LivePortrait.modules.stitching_retargeting_network import StitchingRetargetingNetwork
+from collections import OrderedDict
+import yaml
 
 def tensor2pil(image):
     return Image.fromarray(np.clip(255. * image.cpu().numpy().squeeze(), 0, 255).astype(np.uint8))
@@ -72,21 +80,154 @@ class PreparedSrcImg:
         self.x_s_user = x_s_user
         self.mask_ori = mask_ori
 
+import requests
+from tqdm import tqdm
+
 class LP_Engine:
     pipeline = None
-    bbox_model = None
+    detect_model = None
     mask_img = None
+
+    def download_model(_, file_path, model_url):
+        print('AdvancedLivePortrait: Downloading model...')
+        response = requests.get(model_url, stream=True)
+        try:
+            if response.status_code == 200:
+                total_size = int(response.headers.get('content-length', 0))
+                block_size = 1024  # 1 Kibibyte
+
+                # tqdm will display a progress bar
+                with open(file_path, 'wb') as file, tqdm(
+                        desc='Downloading',
+                        total=total_size,
+                        unit='iB',
+                        unit_scale=True,
+                        unit_divisor=1024,
+                ) as bar:
+                    for data in response.iter_content(block_size):
+                        bar.update(len(data))
+                        file.write(data)
+
+        except requests.exceptions.RequestException as err:
+            print('AdvancedLivePortrait: Model download failed: {err}')
+            print(f'AdvancedLivePortrait: Download it manually from: {model_url}')
+            print(f'AdvancedLivePortrait: And put it in {file_path}')
+        except Exception as e:
+            print(f'AdvancedLivePortrait: An unexpected error occurred: {e}')
+
+    def remove_ddp_dumplicate_key(_, state_dict):
+        state_dict_new = OrderedDict()
+        for key in state_dict.keys():
+            state_dict_new[key.replace('module.', '')] = state_dict[key]
+        return state_dict_new
+
+    def filter_for_model(_, checkpoint, prefix):
+        filtered_checkpoint = {key.replace(prefix + "_module.", ""): value for key, value in checkpoint.items() if
+                               key.startswith(prefix)}
+        return filtered_checkpoint
+
+    def load_model(self, model_config, device, model_type):
+
+        if model_type == 'stitching_retargeting_module':
+            ckpt_path = os.path.join(get_model_dir("liveportrait"), "retargeting_models", model_type + ".pth")
+        else:
+            ckpt_path = os.path.join(get_model_dir("liveportrait"), "base_models", model_type + ".pth")
+
+        is_safetensors = None
+        if os.path.isfile(ckpt_path) == False:
+            is_safetensors = True
+            ckpt_path = os.path.join(get_model_dir("liveportrait"), model_type + ".safetensors")
+            if os.path.isfile(ckpt_path) == False:
+                self.download_model(ckpt_path,
+                "https://huggingface.co/Kijai/LivePortrait_safetensors/resolve/main/" + model_type + ".safetensors")
+        model_params = model_config['model_params'][f'{model_type}_params']
+        if model_type == 'appearance_feature_extractor':
+            model = AppearanceFeatureExtractor(**model_params).cuda(device)
+        elif model_type == 'motion_extractor':
+            model = MotionExtractor(**model_params).cuda(device)
+        elif model_type == 'warping_module':
+            model = WarpingNetwork(**model_params).cuda(device)
+        elif model_type == 'spade_generator':
+            model = SPADEDecoder(**model_params).cuda(device)
+        elif model_type == 'stitching_retargeting_module':
+            # Special handling for stitching and retargeting module
+            config = model_config['model_params']['stitching_retargeting_module_params']
+            #checkpoint = torch.load(ckpt_path, map_location=lambda storage, loc: storage)
+            checkpoint = comfy.utils.load_torch_file(ckpt_path)
+
+            stitcher = StitchingRetargetingNetwork(**config.get('stitching'))
+            if is_safetensors:
+                stitcher.load_state_dict(self.filter_for_model(checkpoint, 'retarget_shoulder'))
+            else:
+                stitcher.load_state_dict(self.remove_ddp_dumplicate_key(checkpoint['retarget_shoulder']))
+            stitcher = stitcher.to(device)
+            stitcher.eval()
+
+            # retargetor_lip = StitchingRetargetingNetwork(**config.get('lip'))
+            # retargetor_lip.load_state_dict(self.remove_ddp_dumplicate_key(checkpoint['retarget_mouth']))
+            # retargetor_lip = retargetor_lip.cuda(device)
+            # retargetor_lip.eval()
+            #
+            # retargetor_eye = StitchingRetargetingNetwork(**config.get('eye'))
+            # retargetor_eye.load_state_dict(self.remove_ddp_dumplicate_key(checkpoint['retarget_eye']))
+            # retargetor_eye = retargetor_eye.cuda(device)
+            # retargetor_eye.eval()
+
+            return {
+                'stitching': stitcher,
+                #'lip': retargetor_lip,
+                #'eye': retargetor_eye
+            }
+        else:
+            raise ValueError(f"Unknown model type: {model_type}")
+
+
+        model.load_state_dict(comfy.utils.load_torch_file(ckpt_path))
+        #model.load_state_dict(torch.load(ckpt_path, map_location=lambda storage, loc: storage))
+        model.eval()
+        return model
+
+    def load_models(self):
+        model_path = get_model_dir("liveportrait")
+        if not os.path.exists(model_path):
+            os.mkdir(model_path)
+
+            #print(f"Downloading model to: {model_path}")
+            #from huggingface_hub import snapshot_download
+            # snapshot_download(repo_id="Kijai/LivePortrait_safetensors",
+            #                   local_dir=model_path,
+            #                   local_dir_use_symlinks=False)
+
+        model_config_path = os.path.join(current_directory, 'LivePortrait', 'config', 'models.yaml')
+        model_config = yaml.safe_load(open(model_config_path, 'r'))
+
+        device_id = 0
+        appearance_feature_extractor = self.load_model(model_config, device_id, 'appearance_feature_extractor')
+        motion_extractor = self.load_model(model_config, device_id, 'motion_extractor')
+        warping_module = self.load_model(model_config, device_id, 'warping_module')
+        spade_generator = self.load_model(model_config, device_id, 'spade_generator')
+        stitching_retargeting_module = self.load_model(model_config, device_id, 'stitching_retargeting_module')
+
+        self.pipeline = LivePortraitWrapper(InferenceConfig(), appearance_feature_extractor, motion_extractor, warping_module, spade_generator, stitching_retargeting_module)
+
+    def get_detect_model(self):
+        if self.detect_model == None:
+            model_dir = get_model_dir("ultralytics")
+            if not os.path.exists(model_dir): os.mkdir(model_dir)
+            model_path = os.path.join(model_dir, "face_yolov8n.pt")
+            if not os.path.exists(model_path):
+                self.download_model(model_path, "https://huggingface.co/Bingsu/adetailer/resolve/main/face_yolov8n.pt")
+            self.detect_model = YOLO(model_path)
+
+        return self.detect_model
 
     def detect_face(self, image_rgb):
 
         crop_factor = 1.7
         bbox_drop_size = 10
+        detect_model = self.get_detect_model()
 
-        if self.bbox_model == None:
-            bbox_model_path = os.path.join(get_model_dir("ultralytics"), "face_yolov8n.pt")
-            self.bbox_model = YOLO(bbox_model_path)
-
-        pred = self.bbox_model(image_rgb, conf=0.7, device="")
+        pred = detect_model(image_rgb, conf=0.7, device="")
         bboxes = pred[0].boxes.xyxy.cpu().numpy()
 
         w, h = get_rgb_size(image_rgb)
@@ -129,7 +270,7 @@ class LP_Engine:
     def get_pipeline(self):
         if self.pipeline == None:
             print("Load pipeline...")
-            self.pipeline = LivePortraitWrapper(cfg=InferenceConfig())
+            self.load_models()
 
         return self.pipeline
 
@@ -154,7 +295,7 @@ class LP_Engine:
 
     def GetMask(self):
         if self.mask_img is None:
-            path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "./LivePortrait/src/utils/resources/mask_template.png")
+            path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "./LivePortrait/utils/resources/mask_template.png")
             self.mask_img = cv2.imread(path, cv2.IMREAD_COLOR)
         return self.mask_img
 

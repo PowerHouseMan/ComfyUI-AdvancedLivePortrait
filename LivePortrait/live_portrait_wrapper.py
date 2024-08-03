@@ -4,37 +4,23 @@ import cv2
 import torch
 import yaml
 
-from LivePortrait.src.utils.timer import Timer
-from LivePortrait.src.utils.helper import load_model, concat_feat
-from LivePortrait.src.utils.camera import headpose_pred_to_degree, get_rotation_matrix
-from LivePortrait.src.config.inference_config import InferenceConfig
-from LivePortrait.src.utils.rprint import rlog as log
+from .utils.timer import Timer
+from .utils.helper import concat_feat
+from .utils.camera import headpose_pred_to_degree, get_rotation_matrix
+from .config.inference_config import InferenceConfig
+from .utils.rprint import rlog as log
 
 
 class LivePortraitWrapper(object):
 
-    def __init__(self, cfg: InferenceConfig):
+    def __init__(self, cfg: InferenceConfig, appearance_feature_extractor, motion_extractor,
+                                            warping_module, spade_generator, stitching_retargeting_module):
 
-        model_config = yaml.load(open(cfg.models_config, 'r'), Loader=yaml.SafeLoader)
-
-        # init F
-        self.appearance_feature_extractor = load_model(cfg.checkpoint_F, model_config, cfg.device_id, 'appearance_feature_extractor')
-        log(f'Load appearance_feature_extractor done.')
-        # init M
-        self.motion_extractor = load_model(cfg.checkpoint_M, model_config, cfg.device_id, 'motion_extractor')
-        log(f'Load motion_extractor done.')
-        # init W
-        self.warping_module = load_model(cfg.checkpoint_W, model_config, cfg.device_id, 'warping_module')
-        log(f'Load warping_module done.')
-        # init G
-        self.spade_generator = load_model(cfg.checkpoint_G, model_config, cfg.device_id, 'spade_generator')
-        log(f'Load spade_generator done.')
-        # init S and R
-        if cfg.checkpoint_S is not None and osp.exists(cfg.checkpoint_S):
-            self.stitching_retargeting_module = load_model(cfg.checkpoint_S, model_config, cfg.device_id, 'stitching_retargeting_module')
-            log(f'Load stitching_retargeting_module done.')
-        else:
-            self.stitching_retargeting_module = None
+        self.appearance_feature_extractor = appearance_feature_extractor
+        self.motion_extractor = motion_extractor
+        self.warping_module = warping_module
+        self.spade_generator = spade_generator
+        self.stitching_retargeting_module = stitching_retargeting_module
 
         self.cfg = cfg
         self.device_id = cfg.device_id
