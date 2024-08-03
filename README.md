@@ -5,20 +5,16 @@ https://github.com/user-attachments/assets/90b78639-6477-48af-ba49-7945488df581
 
 \ComfyUI_windows_portable\ComfyUI\custom_nodes\ComfyUI-AdvancedLivePortrait\install.bat  Run it.
 
-https://drive.google.com/drive/folders/1UtKgzKjFAOmZkhNK-OYT0caJ_w2XAnib  download
+The model file uses the ComfyUI-LivePortraitKJ model. link : https://github.com/kijai/ComfyUI-LivePortraitKJ
 
-Do not use insightface.
-
-You only need 'liveportait' folder.
-
-\ComfyUI_windows_portable\ComfyUI\models\  Put it here.
+It will be downloaded automatically.
 
 -----
 
 \ComfyUI_windows_portable\ComfyUI\custom_nodes\ComfyUI-AdvancedLivePortrait\sample\  There are workflows and sample data.
 
 
-You can add expressions to the video. See sample2.json workflow.
+You can add expressions to the video. See 'workflow2_advanced.json'.
 
 Describes the 'command' in 'workflow2_advanced.json'
 
@@ -43,4 +39,4 @@ You can save and load expressions with the 'Load Exp Data' 'Save Exp Data' nodes
 
 Thanks
 
-Original author's link https://liveportrait.github.io/
+Original author's link : https://liveportrait.github.io/
