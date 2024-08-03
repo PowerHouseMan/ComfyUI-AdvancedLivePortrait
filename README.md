@@ -10,6 +10,8 @@ Insert facial expressions into videos.
 
 Create animations using multiple facial expressions.
 
+Extract facial expressions from sample photos.
+
 ## Installation
 
 This project has been registered with ComfyUI-Manager. Now you can install it automatically using the manager.
