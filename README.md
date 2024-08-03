@@ -36,4 +36,5 @@ You can save and load expressions with the 'Load Exp Data' 'Save Exp Data' nodes
 Thanks
 
 Original author's link : https://liveportrait.github.io/
+
 This project uses a model converted by kijai. link : https://github.com/kijai/ComfyUI-LivePortraitKJ
