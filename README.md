@@ -5,7 +5,9 @@
 https://github.com/user-attachments/assets/90b78639-6477-48af-ba49-7945488df581
 
 Edit facial expressions in photos.
+
 Insert facial expressions into videos.
+
 Create animations using multiple facial expressions.
 
 ## Installation
