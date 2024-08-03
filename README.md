@@ -1,14 +1,21 @@
+# ComfyUI-AdvancedLivePortrait
+
+## Introduction
+
 https://github.com/user-attachments/assets/90b78639-6477-48af-ba49-7945488df581
 
+Edit facial expressions in photos.
+Insert facial expressions into videos.
+Create animations using multiple facial expressions.
 
---- install ---
+## Installation
 
 This project has been registered with ComfyUI-Manager. Now you can install it automatically using the manager.
 
+## Usage
+
+The workflows and sample datas placed in '\custom_nodes\ComfyUI-AdvancedLivePortrait\sample\'
 -----
-
-\ComfyUI_windows_portable\ComfyUI\custom_nodes\ComfyUI-AdvancedLivePortrait\sample\  There are workflows and sample data.
-
 
 You can add expressions to the video. See 'workflow2_advanced.json'.
 
@@ -33,7 +40,7 @@ You can save and load expressions with the 'Load Exp Data' 'Save Exp Data' nodes
 
 -----
 
-Thanks
+## Thanks
 
 Original author's link : https://liveportrait.github.io/
 
