@@ -3,11 +3,7 @@ https://github.com/user-attachments/assets/90b78639-6477-48af-ba49-7945488df581
 
 --- install ---
 
-\ComfyUI_windows_portable\ComfyUI\custom_nodes\ComfyUI-AdvancedLivePortrait\install.bat  Run it.
-
-The model file uses the ComfyUI-LivePortraitKJ model. link : https://github.com/kijai/ComfyUI-LivePortraitKJ
-
-It will be downloaded automatically.
+This project has been registered with ComfyUI-Manager. Now you can install it automatically using the manager.
 
 -----
 
@@ -40,3 +36,4 @@ You can save and load expressions with the 'Load Exp Data' 'Save Exp Data' nodes
 Thanks
 
 Original author's link : https://liveportrait.github.io/
+This project uses a model converted by kijai. link : https://github.com/kijai/ComfyUI-LivePortraitKJ
