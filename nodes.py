@@ -8,12 +8,14 @@ import folder_paths
 import comfy.utils
 import time
 import copy
-import math
 import dill
-import torch.nn.functional as torchfn
+import yaml
+import random
 from torchvision import transforms
 from ultralytics import YOLO
-from scipy.spatial.transform import Rotation as R
+#import math
+#import torch.nn.functional as torchfn
+#from scipy.spatial.transform import Rotation as R
 
 current_file_path = os.path.abspath(__file__)
 current_directory = os.path.dirname(current_file_path)
@@ -29,7 +31,7 @@ from .LivePortrait.modules.motion_extractor import MotionExtractor
 from .LivePortrait.modules.appearance_feature_extractor import AppearanceFeatureExtractor
 from .LivePortrait.modules.stitching_retargeting_network import StitchingRetargetingNetwork
 from collections import OrderedDict
-import yaml
+
 
 def tensor2pil(image):
     return Image.fromarray(np.clip(255. * image.cpu().numpy().squeeze(), 0, 255).astype(np.uint8))
@@ -42,8 +44,8 @@ def rgb_crop_batch(rgbs, region):
     return rgbs[:, region[1]:region[3], region[0]:region[2]]
 def get_rgb_size(rgb):
     return rgb.shape[1], rgb.shape[0]
-def create_transform_matrix(x, y, scale=1):
-    return np.float32([[scale, 0, x], [0, scale, y]])
+def create_transform_matrix(x, y, s_x, s_y):
+    return np.float32([[s_x, 0, x], [0, s_y, y]])
 
 def get_model_dir(m):
     try:
@@ -221,9 +223,9 @@ class LP_Engine:
 
         return self.detect_model
 
-    def detect_face(self, image_rgb):
+    def detect_face(self, image_rgb, crop_factor):
 
-        crop_factor = 1.7
+        #crop_factor = 1.7
         bbox_drop_size = 10
         detect_model = self.get_detect_model()
 
@@ -246,26 +248,69 @@ class LP_Engine:
             kernel_x = x1 + bbox_w / 2
             kernel_y = y1 + bbox_h / 2
 
-            new_x1, new_x2, crop_w = calc_crop_limit(kernel_x, w, crop_w)
+            # new_x1, new_x2, crop_w = calc_crop_limit(kernel_x, w, crop_w)
+            # if crop_w < crop_h:
+            #     crop_h = crop_w
+            # new_y1, new_y2, crop_h = calc_crop_limit(kernel_y, h, crop_h)
+            # if crop_h < crop_w:
+            #     crop_w = crop_h
+            #     new_x1, new_x2, crop_w = calc_crop_limit(kernel_x, w, crop_w)
 
-            if crop_w < crop_h:
-                crop_h = crop_w
-
-            new_y1, new_y2, crop_h = calc_crop_limit(kernel_y, h, crop_h)
-
-            if crop_h < crop_w:
-                crop_w = crop_h
-                new_x1, new_x2, crop_w = calc_crop_limit(kernel_x, w, crop_w)
+            new_x1 = kernel_x - crop_w / 2
+            new_x2 = kernel_x + crop_w / 2
+            new_y1 = kernel_y - crop_h / 2
+            new_y2 = kernel_y + crop_h / 2
+            # square = [int(new_x1), int(new_y1), int(new_x2), int(new_y2)]
+            # mask =
 
             return [int(new_x1), int(new_y1), int(new_x2), int(new_y2)]
 
         print("Failed to detect face!!")
         return [0, 0, w, h]
 
-    def crop_face(self, rgb_img):
-        region = self.detect_face(rgb_img)
-        face_image = rgb_crop(rgb_img, region)
-        return face_image, region
+    # def crop_face(self, rgb_img, crop_factor):
+    #     square = self.detect_face(rgb_img, crop_factor)
+    #     region = copy.deepcopy(square)
+    #
+    #     w, h = get_rgb_size(rgb_img)
+    #     is_different_size = False
+    #     if region[0] < 0: region[0] = 0
+    #     if region[1] < 0: region[1] = 0
+    #     if w < region[2]: region[2] = w
+    #     if h < region[3]: region[3] = h
+    #     for i in range(4):
+    #         if region[i] != square[i]:
+    #             is_different_size = True
+    #             break
+    #     face_image = rgb_crop(rgb_img, region)
+    #     if is_different_size:
+    #         crop_trans_m = create_transform_matrix(max(-square[0], 0), max(-square[1], 0), 1)
+    #         log(f"crop_trans_m:{crop_trans_m}, face_image.shape:{face_image.shape}, square:{square}")
+    #         face_image = cv2.warpAffine(face_image, crop_trans_m, (square[2] - square[0], square[3] - square[1]), cv2.INTER_LINEAR)
+    #         log(f"face_image.shape:{face_image.shape}")
+    #
+    #     return face_image, region
+
+    def calc_face_region(self, square, dsize):
+        region = copy.deepcopy(square)
+        is_changed = False
+        if region[0] < 0: region[0] = 0
+        if region[1] < 0: region[1] = 0
+        if dsize[0] < region[2]: region[2] = dsize[0]
+        if dsize[1] < region[3]: region[3] = dsize[1]
+        for i in range(4):
+            if region[i] != square[i]:
+                is_changed = True
+                break
+
+        return region, is_changed
+
+    def expand_img(self, rgb_img, square):
+        #new_img = rgb_crop(rgb_img, face_region)
+        crop_trans_m = create_transform_matrix(max(-square[0], 0), max(-square[1], 0), 1, 1)
+        new_img = cv2.warpAffine(rgb_img, crop_trans_m, (square[2] - square[0], square[3] - square[1]),
+                                        cv2.INTER_LINEAR)
+        return new_img
 
     def get_pipeline(self):
         if self.pipeline == None:
@@ -293,27 +338,41 @@ class LP_Engine:
         x = x.cuda()
         return x
 
-    def GetMask(self):
+    def GetMaskImg(self):
         if self.mask_img is None:
             path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "./LivePortrait/utils/resources/mask_template.png")
             self.mask_img = cv2.imread(path, cv2.IMREAD_COLOR)
         return self.mask_img
 
-    def prepare_source(self, source_image, is_video = False):
+    def crop_face(self, img_rgb, crop_factor):
+        crop_region = self.detect_face(img_rgb, crop_factor)
+        face_region, is_changed = self.calc_face_region(crop_region, get_rgb_size(img_rgb))
+        face_img = rgb_crop(img_rgb, face_region)
+        if is_changed: face_img = self.expand_img(face_img, crop_region)
+        return face_img
+
+    def prepare_source(self, source_image, crop_factor, is_video = False):
         print("Prepare source...")
         engine = self.get_pipeline()
         source_image_np = (source_image * 255).byte().numpy()
         img_rgb = source_image_np[0]
-        face_img, crop_region = self.crop_face(img_rgb)
+        crop_region = self.detect_face(img_rgb, crop_factor)
+        face_region, is_changed = self.calc_face_region(crop_region, get_rgb_size(img_rgb))
 
-        scale = face_img.shape[0] / 512.
-        crop_trans_m = create_transform_matrix(crop_region[0], crop_region[1], scale)
-        mask_ori = cv2.warpAffine(self.GetMask(), crop_trans_m, get_rgb_size(img_rgb), cv2.INTER_LINEAR)
+        s_x = (face_region[2] - face_region[0]) / 512.
+        s_y = (face_region[3] - face_region[1]) / 512.
+        crop_trans_m = create_transform_matrix(crop_region[0], crop_region[1], s_x, s_y)
+        mask_ori = cv2.warpAffine(self.GetMaskImg(), crop_trans_m, get_rgb_size(img_rgb), cv2.INTER_LINEAR)
         mask_ori = mask_ori.astype(np.float32) / 255.
+
+        if is_changed:
+            s = (crop_region[2] - crop_region[0]) / 512.
+            crop_trans_m = create_transform_matrix(crop_region[0], crop_region[1], s, s)
 
         psi_list = []
         for img_rgb in source_image_np:
-            face_img = rgb_crop(img_rgb, crop_region)
+            face_img = rgb_crop(img_rgb, face_region)
+            if is_changed: face_img = self.expand_img(face_img, crop_region)
             i_s = self.prepare_src_image(face_img)
             x_s_info = engine.get_kp_info(i_s)
             f_s_user = engine.extract_feature_3d(i_s)
@@ -584,10 +643,11 @@ class Command:
         self.change = change
         self.keep = keep
 class AdvancedLivePortrait:
-    def __init__(s):
-        s.src_images = None
-        s.driving_images = None
-        s.pbar = comfy.utils.ProgressBar(1)
+    def __init__(self):
+        self.src_images = None
+        self.driving_images = None
+        self.pbar = comfy.utils.ProgressBar(1)
+        self.crop_factor = None
 
     @classmethod
     def INPUT_TYPES(s):
@@ -596,6 +656,7 @@ class AdvancedLivePortrait:
             "required": {
                 "retargeting_eyes": ("FLOAT", {"default": 0, "min": 0, "max": 1, "step": 0.01}),
                 "retargeting_mouth": ("FLOAT", {"default": 0, "min": 0, "max": 1, "step": 0.01}),
+                "crop_factor": ("FLOAT", {"default": 2, "min": 1.5, "max": 3, "step": 0.1}),
                 "turn_on": ("BOOLEAN", {"default": True}),
                 "command": ("STRING", {"multiline": True, "default": ""}),
             },
@@ -650,7 +711,7 @@ class AdvancedLivePortrait:
         return cmd_list, total_length
 
 
-    def run(self, retargeting_eyes, retargeting_mouth, turn_on, command,
+    def run(self, retargeting_eyes, retargeting_mouth, turn_on, command, crop_factor,
             src_images=None, driving_images=None, motion_link=None):
         if turn_on == False: return (None,None)
         src_length = 1
@@ -662,12 +723,13 @@ class AdvancedLivePortrait:
 
         if src_images != None:
             src_length = len(src_images)
-            if id(src_images) != id(self.src_images):
+            if id(src_images) != id(self.src_images) or self.crop_factor != crop_factor:
+                self.crop_factor = crop_factor
                 self.src_images = src_images
                 if 1 < src_length:
-                    self.psi_list = g_engine.prepare_source(src_images, True)
+                    self.psi_list = g_engine.prepare_source(src_images, crop_factor, True)
                 else:
-                    self.psi_list = [g_engine.prepare_source(src_images)]
+                    self.psi_list = [g_engine.prepare_source(src_images, crop_factor)]
 
 
         cmd_list, cmd_length = self.parsing_command(command, motion_link)
@@ -727,11 +789,9 @@ class AdvancedLivePortrait:
 
                 if d_0_es is None:
                     d_0_es = ExpressionSet(erst = (d_i_info['exp'], d_i_r, d_i_info['scale'], d_i_info['t']))
-                    #d_i_es = d_0_es
                     retargeting(s_es.e, d_0_es.e, retargeting_eyes, (11, 13, 15, 16))
                     retargeting(s_es.e, d_0_es.e, retargeting_mouth, (14, 17, 19, 20))
 
-                #r_new = (r_d_i @ d_0_es.r.permute(0, 2, 1)) @ r_new
                 new_es.e += d_i_info['exp'] - d_0_es.e
                 new_es.r += d_i_r - d_0_es.r
                 new_es.t += d_i_info['t'] - d_0_es.t
@@ -760,6 +820,7 @@ class ExpressionEditor:
     def __init__(self):
         self.sample_image = None
         self.src_image = None
+        self.crop_factor = None
 
     @classmethod
     def INPUT_TYPES(s):
@@ -784,6 +845,7 @@ class ExpressionEditor:
 
                 "src_ratio": ("FLOAT", {"default": 1, "min": 0, "max": 1, "step": 0.01, "display": display}),
                 "sample_ratio": ("FLOAT", {"default": 1, "min": 0, "max": 1, "step": 0.01, "display": display}),
+                "crop_factor": ("FLOAT", {"default": 2, "min": 1.5, "max": 3, "step": 0.1, "display": display}),
             },
 
             "optional": {"src_image": ("IMAGE",), "motion_link": ("EDITOR_LINK",),
@@ -804,7 +866,7 @@ class ExpressionEditor:
     # OUTPUT_IS_LIST = (False,)
 
     def run(self, rotate_pitch, rotate_yaw, rotate_roll, blink, eyebrow, wink, pupil_x, pupil_y, aaa, eee, woo, smile,
-            src_ratio, sample_ratio, src_image=None, sample_image=None, motion_link=None, add_exp=None):
+            src_ratio, sample_ratio, crop_factor, src_image=None, sample_image=None, motion_link=None, add_exp=None):
         rotate_yaw = -rotate_yaw
 
         new_editor_link = None
@@ -812,8 +874,9 @@ class ExpressionEditor:
             self.psi = motion_link[0]
             new_editor_link = motion_link.copy()
         elif src_image != None:
-            if id(src_image) != id(self.src_image):
-                self.psi = g_engine.prepare_source(src_image)
+            if id(src_image) != id(self.src_image) or self.crop_factor != crop_factor:
+                self.crop_factor = crop_factor
+                self.psi = g_engine.prepare_source(src_image, crop_factor)
                 self.src_image = src_image
             new_editor_link = []
             new_editor_link.append(self.psi)
@@ -835,7 +898,7 @@ class ExpressionEditor:
             if id(self.sample_image) != id(sample_image):
                 self.sample_image = sample_image
                 d_image_np = (sample_image * 255).byte().numpy()
-                d_face, _ = g_engine.crop_face(d_image_np[0])
+                d_face = g_engine.crop_face(d_image_np[0], 1.7)
                 i_d = pipeline.prepare_source(d_face)
                 self.d_info = pipeline.get_kp_info(i_d)
                 self.d_info['exp'][0, 5, 0] = 0

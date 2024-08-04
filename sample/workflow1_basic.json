@@ -203,58 +203,6 @@
       }
     },
     {
-      "id": 23,
-      "type": "AdvancedLivePortrait",
-      "pos": [
-        1896.174414062501,
-        71.12568228759817
-      ],
-      "size": {
-        "0": 235.1999969482422,
-        "1": 408
-      },
-      "flags": {},
-      "order": 8,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "src_images",
-          "type": "IMAGE",
-          "link": 27
-        },
-        {
-          "name": "motion_link",
-          "type": "EDITOR_LINK",
-          "link": null
-        },
-        {
-          "name": "driving_images",
-          "type": "IMAGE",
-          "link": 28
-        }
-      ],
-      "outputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "links": [
-            29
-          ],
-          "shape": 3,
-          "slot_index": 0
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "AdvancedLivePortrait"
-      },
-      "widgets_values": [
-        0,
-        0,
-        true,
-        ""
-      ]
-    },
-    {
       "id": 21,
       "type": "ExpressionEditor",
       "pos": [
@@ -263,7 +211,7 @@
       ],
       "size": [
         210,
-        642
+        666
       ],
       "flags": {},
       "order": 10,
@@ -328,7 +276,8 @@
         0,
         0,
         1,
-        1
+        1,
+        2
       ]
     },
     {
@@ -454,68 +403,16 @@
       }
     },
     {
-      "id": 28,
-      "type": "AdvancedLivePortrait",
-      "pos": [
-        1824.4893678710996,
-        860.0075893554671
-      ],
-      "size": {
-        "0": 235.1999969482422,
-        "1": 408.0000305175781
-      },
-      "flags": {},
-      "order": 12,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "src_images",
-          "type": "IMAGE",
-          "link": 32
-        },
-        {
-          "name": "motion_link",
-          "type": "EDITOR_LINK",
-          "link": null
-        },
-        {
-          "name": "driving_images",
-          "type": "IMAGE",
-          "link": 31
-        }
-      ],
-      "outputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "links": [
-            33
-          ],
-          "shape": 3,
-          "slot_index": 0
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "AdvancedLivePortrait"
-      },
-      "widgets_values": [
-        0,
-        0,
-        true,
-        ""
-      ]
-    },
-    {
       "id": 30,
       "type": "ExpressionEditor",
       "pos": [
         1287.4893678710926,
         850.0075893554672
       ],
-      "size": {
-        "0": 210,
-        "1": 642
-      },
+      "size": [
+        210,
+        665.9999771118164
+      ],
       "flags": {},
       "order": 9,
       "mode": 0,
@@ -581,7 +478,8 @@
         0,
         1.3,
         1,
-        1
+        1,
+        2
       ]
     },
     {
@@ -645,9 +543,9 @@
           "hidden": false,
           "paused": false,
           "params": {
-            "filename": "AdvancedLivePortrait_00002.mp4",
+            "filename": "AdvancedLivePortrait_00007.mp4",
             "subfolder": "",
-            "type": "temp",
+            "type": "output",
             "format": "video/h264-mp4",
             "frame_rate": 15
           }
@@ -715,9 +613,9 @@
           "hidden": false,
           "paused": false,
           "params": {
-            "filename": "AdvancedLivePortrait_00001.mp4",
+            "filename": "AdvancedLivePortrait_00008.mp4",
             "subfolder": "",
-            "type": "temp",
+            "type": "output",
             "format": "video/h264-mp4",
             "frame_rate": 15
           }
@@ -731,10 +629,10 @@
         703.4307320312498,
         25.292402087402362
       ],
-      "size": [
-        210.9286651611328,
-        314
-      ],
+      "size": {
+        "0": 210.9286651611328,
+        "1": 314
+      },
       "flags": {},
       "order": 6,
       "mode": 0,
@@ -764,6 +662,112 @@
       ]
     },
     {
+      "id": 28,
+      "type": "AdvancedLivePortrait",
+      "pos": [
+        1824.4893678710996,
+        860.0075893554671
+      ],
+      "size": [
+        235.1999969482422,
+        628.0000305175781
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "src_images",
+          "type": "IMAGE",
+          "link": 32
+        },
+        {
+          "name": "motion_link",
+          "type": "EDITOR_LINK",
+          "link": null
+        },
+        {
+          "name": "driving_images",
+          "type": "IMAGE",
+          "link": 31
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": [
+            33
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "AdvancedLivePortrait"
+      },
+      "widgets_values": [
+        0,
+        0,
+        2,
+        "",
+        ""
+      ]
+    },
+    {
+      "id": 23,
+      "type": "AdvancedLivePortrait",
+      "pos": [
+        1896.174414062501,
+        71.12568228759817
+      ],
+      "size": [
+        235.1999969482422,
+        628
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "src_images",
+          "type": "IMAGE",
+          "link": 27
+        },
+        {
+          "name": "motion_link",
+          "type": "EDITOR_LINK",
+          "link": null
+        },
+        {
+          "name": "driving_images",
+          "type": "IMAGE",
+          "link": 28
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": [
+            29
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "AdvancedLivePortrait"
+      },
+      "widgets_values": [
+        0,
+        0,
+        2,
+        "",
+        ""
+      ]
+    },
+    {
       "id": 14,
       "type": "ExpressionEditor",
       "pos": [
@@ -772,7 +776,7 @@
       ],
       "size": [
         210,
-        642
+        666
       ],
       "flags": {},
       "order": 7,
@@ -837,7 +841,8 @@
         0,
         0,
         1,
-        1
+        1,
+        2
       ]
     }
   ],
@@ -972,10 +977,10 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.6209213230591555,
+      "scale": 0.751314800901578,
       "offset": [
-        550.93444395092,
-        459.81407391929736
+        408.91997303598856,
+        268.57718967671127
       ]
     }
   },
