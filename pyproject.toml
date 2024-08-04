@@ -10,6 +10,6 @@ Repository = "https://github.com/PowerHouseMan/ComfyUI-AdvancedLivePortrait"
 #  Used by Comfy Registry https://comfyregistry.org
 
 [tool.comfy]
-PublisherId = ""
+PublisherId = "starmapking"
 DisplayName = "ComfyUI-AdvancedLivePortrait"
 Icon = ""
