@@ -313,7 +313,9 @@ class LP_Engine:
         h, w = img.shape[:2]
         input_shape = [256,256]
         if h != input_shape[0] or w != input_shape[1]:
-            x = cv2.resize(img, (input_shape[0], input_shape[1]), interpolation = cv2.INTER_LINEAR)
+            if 256 < h: interpolation = cv2.INTER_AREA
+            else: interpolation = cv2.INTER_LINEAR
+            x = cv2.resize(img, (input_shape[0], input_shape[1]), interpolation = interpolation)
         else:
             x = img.copy()
 
