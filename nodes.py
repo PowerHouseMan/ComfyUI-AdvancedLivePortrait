@@ -194,12 +194,6 @@ class LP_Engine:
         if not os.path.exists(model_path):
             os.mkdir(model_path)
 
-            #print(f"Downloading model to: {model_path}")
-            #from huggingface_hub import snapshot_download
-            # snapshot_download(repo_id="Kijai/LivePortrait_safetensors",
-            #                   local_dir=model_path,
-            #                   local_dir_use_symlinks=False)
-
         model_config_path = os.path.join(current_directory, 'LivePortrait', 'config', 'models.yaml')
         model_config = yaml.safe_load(open(model_config_path, 'r'))
 
@@ -385,7 +379,6 @@ class LP_Engine:
         for f_img in f_img_np:
             i_d = pipeline.prepare_source(f_img)
             d_info = pipeline.get_kp_info(i_d)
-            #out_list.append((d_info, get_rotation_matrix(d_info['pitch'], d_info['yaw'], d_info['roll'])))
             out_list.append(d_info)
 
         return out_list
@@ -581,15 +574,10 @@ class ExpData:
     CATEGORY = "AdvancedLivePortrait"
 
     def run(self, code1, value1, code2, value2, code3, value3, code4, value4, code5, value5, add_exp=None):
-        #print(f"type(None):{type(None)}")
-        #if type(add_exp) == type(None):
         if add_exp == None:
             es = ExpressionSet()
-            log(f"exp11:{es.exp[0,1,1]}")
         else:
             es = ExpressionSet(es = add_exp)
-            if id(es.exp) == id(add_exp.exp):
-                log("id(es.exp) == id(add_exp.exp) is True")
 
         codes = [code1, code2, code3, code4, code5]
         values = [value1, value2, value3, value4, value5]
@@ -923,8 +911,6 @@ class ExpressionEditor:
 
         crop_with_fullsize = cv2.warpAffine(crop_out, psi.crop_trans_m, get_rgb_size(psi.src_rgb), cv2.INTER_LINEAR)
         out = np.clip(psi.mask_ori * crop_with_fullsize + (1 - psi.mask_ori) * psi.src_rgb, 0, 255).astype(np.uint8)
-
-        print(psi.mask_ori.shape)
 
         out_img = pil2tensor(out)
 
