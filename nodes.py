@@ -225,7 +225,6 @@ class LP_Engine:
 
     def detect_face(self, image_rgb, crop_factor):
 
-        #crop_factor = 1.7
         bbox_drop_size = 10
         detect_model = self.get_detect_model()
 
@@ -234,7 +233,6 @@ class LP_Engine:
 
         w, h = get_rgb_size(image_rgb)
 
-        # for x, label in zip(segmasks, detected_results[0]):
         for x1, y1, x2, y2 in bboxes:
             bbox_w = x2 - x1
             bbox_h = y2 - y1
@@ -248,60 +246,52 @@ class LP_Engine:
             kernel_x = x1 + bbox_w / 2
             kernel_y = y1 + bbox_h / 2
 
-            # new_x1, new_x2, crop_w = calc_crop_limit(kernel_x, w, crop_w)
-            # if crop_w < crop_h:
-            #     crop_h = crop_w
-            # new_y1, new_y2, crop_h = calc_crop_limit(kernel_y, h, crop_h)
-            # if crop_h < crop_w:
-            #     crop_w = crop_h
-            #     new_x1, new_x2, crop_w = calc_crop_limit(kernel_x, w, crop_w)
-
             new_x1 = kernel_x - crop_w / 2
             new_x2 = kernel_x + crop_w / 2
             new_y1 = kernel_y - crop_h / 2
             new_y2 = kernel_y + crop_h / 2
-            # square = [int(new_x1), int(new_y1), int(new_x2), int(new_y2)]
-            # mask =
+
+            if new_x1 < 0:
+                new_x2 -= new_x1
+                new_x1 = 0
+            elif w < new_x2:
+                new_x1 -= (new_x2 - w)
+                new_x2 = w
+                if new_x1 < 0:
+                    new_x2 -= new_x1
+                    new_x1 = 0
+
+            if new_y1 < 0:
+                new_y2 -= new_y1
+                new_y1 = 0
+            elif h < new_y2:
+                new_y1 -= (new_y2 - h)
+                new_y2 = h
+                if new_y1 < 0:
+                    new_y2 -= new_y1
+                    new_y1 = 0
+
+            if w < new_x2 and h < new_y2:
+                over_x = new_x2 - w
+                over_y = new_y2 - h
+                over_min = min(over_x, over_y)
+                new_x2 -= over_min
+                new_y2 -= over_min
 
             return [int(new_x1), int(new_y1), int(new_x2), int(new_y2)]
 
         print("Failed to detect face!!")
         return [0, 0, w, h]
 
-    # def crop_face(self, rgb_img, crop_factor):
-    #     square = self.detect_face(rgb_img, crop_factor)
-    #     region = copy.deepcopy(square)
-    #
-    #     w, h = get_rgb_size(rgb_img)
-    #     is_different_size = False
-    #     if region[0] < 0: region[0] = 0
-    #     if region[1] < 0: region[1] = 0
-    #     if w < region[2]: region[2] = w
-    #     if h < region[3]: region[3] = h
-    #     for i in range(4):
-    #         if region[i] != square[i]:
-    #             is_different_size = True
-    #             break
-    #     face_image = rgb_crop(rgb_img, region)
-    #     if is_different_size:
-    #         crop_trans_m = create_transform_matrix(max(-square[0], 0), max(-square[1], 0), 1)
-    #         log(f"crop_trans_m:{crop_trans_m}, face_image.shape:{face_image.shape}, square:{square}")
-    #         face_image = cv2.warpAffine(face_image, crop_trans_m, (square[2] - square[0], square[3] - square[1]), cv2.INTER_LINEAR)
-    #         log(f"face_image.shape:{face_image.shape}")
-    #
-    #     return face_image, region
-
     def calc_face_region(self, square, dsize):
         region = copy.deepcopy(square)
         is_changed = False
-        if region[0] < 0: region[0] = 0
-        if region[1] < 0: region[1] = 0
-        if dsize[0] < region[2]: region[2] = dsize[0]
-        if dsize[1] < region[3]: region[3] = dsize[1]
-        for i in range(4):
-            if region[i] != square[i]:
-                is_changed = True
-                break
+        if dsize[0] < region[2]:
+            region[2] = dsize[0]
+            is_changed = True
+        if dsize[1] < region[3]:
+            region[3] = dsize[1]
+            is_changed = True
 
         return region, is_changed
 
@@ -642,6 +632,11 @@ class Command:
         self.es:ExpressionSet = es
         self.change = change
         self.keep = keep
+
+crop_factor_default = 1.7
+crop_factor_min = 1.5
+crop_factor_max = 2.5
+
 class AdvancedLivePortrait:
     def __init__(self):
         self.src_images = None
@@ -656,7 +651,7 @@ class AdvancedLivePortrait:
             "required": {
                 "retargeting_eyes": ("FLOAT", {"default": 0, "min": 0, "max": 1, "step": 0.01}),
                 "retargeting_mouth": ("FLOAT", {"default": 0, "min": 0, "max": 1, "step": 0.01}),
-                "crop_factor": ("FLOAT", {"default": 2, "min": 1.5, "max": 3, "step": 0.1}),
+                "crop_factor": ("FLOAT", {"default": 1.7, "min": 1, "max": 2.5, "step": 0.1}),
                 "turn_on": ("BOOLEAN", {"default": True}),
                 "command": ("STRING", {"multiline": True, "default": ""}),
             },
@@ -845,7 +840,8 @@ class ExpressionEditor:
 
                 "src_ratio": ("FLOAT", {"default": 1, "min": 0, "max": 1, "step": 0.01, "display": display}),
                 "sample_ratio": ("FLOAT", {"default": 1, "min": 0, "max": 1, "step": 0.01, "display": display}),
-                "crop_factor": ("FLOAT", {"default": 2, "min": 1.5, "max": 3, "step": 0.1, "display": display}),
+                "crop_factor": ("FLOAT", {"default": crop_factor_default,
+                                          "min": crop_factor_min, "max": crop_factor_max, "step": 0.1}),
             },
 
             "optional": {"src_image": ("IMAGE",), "motion_link": ("EDITOR_LINK",),

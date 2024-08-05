@@ -1,13 +1,13 @@
 {
-  "last_node_id": 31,
-  "last_link_id": 33,
+  "last_node_id": 32,
+  "last_link_id": 38,
   "nodes": [
     {
       "id": 15,
       "type": "LoadImage",
       "pos": [
-        76.29927722229004,
-        81.9939816479493
+        654.9384793707275,
+        32.435132185058634
       ],
       "size": {
         "0": 210,
@@ -45,8 +45,8 @@
       "id": 19,
       "type": "LoadImage",
       "pos": [
-        694.093866035156,
-        358.5242431079103
+        1308.9368865429728,
+        310.8936660083008
       ],
       "size": {
         "0": 220.3717041015625,
@@ -81,11 +81,11 @@
       ]
     },
     {
-      "id": 22,
+      "id": 26,
       "type": "LoadImage",
       "pos": [
-        1374.1744140625015,
-        82.12568228759815
+        620.239467871092,
+        782.9509859374981
       ],
       "size": {
         "0": 210,
@@ -93,206 +93,6 @@
       },
       "flags": {},
       "order": 2,
-      "mode": 0,
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "links": [
-            27
-          ],
-          "shape": 3,
-          "slot_index": 0
-        },
-        {
-          "name": "MASK",
-          "type": "MASK",
-          "links": null,
-          "shape": 3
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "LoadImage"
-      },
-      "widgets_values": [
-        "source_image.png",
-        "image"
-      ]
-    },
-    {
-      "id": 24,
-      "type": "VHS_LoadVideo",
-      "pos": [
-        1607.174414062501,
-        162.1256822875981
-      ],
-      "size": [
-        235.1999969482422,
-        491.1999969482422
-      ],
-      "flags": {},
-      "order": 3,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "meta_batch",
-          "type": "VHS_BatchManager",
-          "link": null
-        },
-        {
-          "name": "vae",
-          "type": "VAE",
-          "link": null
-        }
-      ],
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "links": [
-            28
-          ],
-          "shape": 3,
-          "slot_index": 0
-        },
-        {
-          "name": "frame_count",
-          "type": "INT",
-          "links": null,
-          "shape": 3
-        },
-        {
-          "name": "audio",
-          "type": "AUDIO",
-          "links": null,
-          "shape": 3
-        },
-        {
-          "name": "video_info",
-          "type": "VHS_VIDEOINFO",
-          "links": null,
-          "shape": 3
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "VHS_LoadVideo"
-      },
-      "widgets_values": {
-        "video": "driving_video.mp4",
-        "force_rate": 0,
-        "force_size": "Disabled",
-        "custom_width": 512,
-        "custom_height": 512,
-        "frame_load_cap": 0,
-        "skip_first_frames": 0,
-        "select_every_nth": 2,
-        "choose video to upload": "image",
-        "videopreview": {
-          "hidden": false,
-          "paused": false,
-          "params": {
-            "frame_load_cap": 0,
-            "skip_first_frames": 0,
-            "force_rate": 0,
-            "filename": "driving_video.mp4",
-            "type": "input",
-            "format": "video/mp4",
-            "select_every_nth": 2
-          }
-        }
-      }
-    },
-    {
-      "id": 21,
-      "type": "ExpressionEditor",
-      "pos": [
-        986.4307320312498,
-        15.292402087402365
-      ],
-      "size": [
-        210,
-        666
-      ],
-      "flags": {},
-      "order": 10,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "src_image",
-          "type": "IMAGE",
-          "link": 26
-        },
-        {
-          "name": "motion_link",
-          "type": "EDITOR_LINK",
-          "link": null
-        },
-        {
-          "name": "sample_image",
-          "type": "IMAGE",
-          "link": 25
-        },
-        {
-          "name": "add_exp",
-          "type": "EXP_DATA",
-          "link": null
-        }
-      ],
-      "outputs": [
-        {
-          "name": "image",
-          "type": "IMAGE",
-          "links": null,
-          "shape": 3,
-          "slot_index": 0
-        },
-        {
-          "name": "motion_link",
-          "type": "EDITOR_LINK",
-          "links": null,
-          "shape": 3
-        },
-        {
-          "name": "save_exp",
-          "type": "EXP_DATA",
-          "links": null,
-          "shape": 3
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "ExpressionEditor"
-      },
-      "widgets_values": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        2
-      ]
-    },
-    {
-      "id": 26,
-      "type": "LoadImage",
-      "pos": [
-        1043.4893678710926,
-        844.0075893554671
-      ],
-      "size": {
-        "0": 210,
-        "1": 314
-      },
-      "flags": {},
-      "order": 4,
       "mode": 0,
       "outputs": [
         {
@@ -323,15 +123,15 @@
       "id": 27,
       "type": "VHS_LoadVideo",
       "pos": [
-        1550.4893678710941,
-        969.0075893554671
+        1127.239467871095,
+        907.9509859374981
       ],
       "size": [
         235.1999969482422,
         491.1999969482422
       ],
       "flags": {},
-      "order": 5,
+      "order": 3,
       "mode": 0,
       "inputs": [
         {
@@ -403,238 +203,18 @@
       }
     },
     {
-      "id": 30,
-      "type": "ExpressionEditor",
-      "pos": [
-        1287.4893678710926,
-        850.0075893554672
-      ],
-      "size": [
-        210,
-        665.9999771118164
-      ],
-      "flags": {},
-      "order": 9,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "src_image",
-          "type": "IMAGE",
-          "link": 30
-        },
-        {
-          "name": "motion_link",
-          "type": "EDITOR_LINK",
-          "link": null
-        },
-        {
-          "name": "sample_image",
-          "type": "IMAGE",
-          "link": null
-        },
-        {
-          "name": "add_exp",
-          "type": "EXP_DATA",
-          "link": null
-        }
-      ],
-      "outputs": [
-        {
-          "name": "image",
-          "type": "IMAGE",
-          "links": [
-            32
-          ],
-          "shape": 3,
-          "slot_index": 0
-        },
-        {
-          "name": "motion_link",
-          "type": "EDITOR_LINK",
-          "links": null,
-          "shape": 3
-        },
-        {
-          "name": "save_exp",
-          "type": "EXP_DATA",
-          "links": null,
-          "shape": 3
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "ExpressionEditor"
-      },
-      "widgets_values": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1.3,
-        1,
-        1,
-        2
-      ]
-    },
-    {
-      "id": 29,
-      "type": "VHS_VideoCombine",
-      "pos": [
-        2117.4893678710987,
-        864.0075893554671
-      ],
-      "size": [
-        272.9300842285156,
-        576.9300842285156
-      ],
-      "flags": {},
-      "order": 13,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "link": 33
-        },
-        {
-          "name": "audio",
-          "type": "AUDIO",
-          "link": null
-        },
-        {
-          "name": "meta_batch",
-          "type": "VHS_BatchManager",
-          "link": null
-        },
-        {
-          "name": "vae",
-          "type": "VAE",
-          "link": null
-        }
-      ],
-      "outputs": [
-        {
-          "name": "Filenames",
-          "type": "VHS_FILENAMES",
-          "links": null,
-          "shape": 3
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "VHS_VideoCombine"
-      },
-      "widgets_values": {
-        "frame_rate": 15,
-        "loop_count": 0,
-        "filename_prefix": "AdvancedLivePortrait",
-        "format": "video/h264-mp4",
-        "pix_fmt": "yuv420p",
-        "crf": 19,
-        "save_metadata": true,
-        "pingpong": false,
-        "save_output": true,
-        "videopreview": {
-          "hidden": false,
-          "paused": false,
-          "params": {
-            "filename": "AdvancedLivePortrait_00007.mp4",
-            "subfolder": "",
-            "type": "output",
-            "format": "video/h264-mp4",
-            "frame_rate": 15
-          }
-        }
-      }
-    },
-    {
-      "id": 25,
-      "type": "VHS_VideoCombine",
-      "pos": [
-        2177.1744140624965,
-        69.12568228759815
-      ],
-      "size": [
-        272.9300842285156,
-        576.9300842285156
-      ],
-      "flags": {},
-      "order": 11,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "link": 29
-        },
-        {
-          "name": "audio",
-          "type": "AUDIO",
-          "link": null
-        },
-        {
-          "name": "meta_batch",
-          "type": "VHS_BatchManager",
-          "link": null
-        },
-        {
-          "name": "vae",
-          "type": "VAE",
-          "link": null
-        }
-      ],
-      "outputs": [
-        {
-          "name": "Filenames",
-          "type": "VHS_FILENAMES",
-          "links": null,
-          "shape": 3
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "VHS_VideoCombine"
-      },
-      "widgets_values": {
-        "frame_rate": 15,
-        "loop_count": 0,
-        "filename_prefix": "AdvancedLivePortrait",
-        "format": "video/h264-mp4",
-        "pix_fmt": "yuv420p",
-        "crf": 19,
-        "save_metadata": true,
-        "pingpong": false,
-        "save_output": true,
-        "videopreview": {
-          "hidden": false,
-          "paused": false,
-          "params": {
-            "filename": "AdvancedLivePortrait_00008.mp4",
-            "subfolder": "",
-            "type": "output",
-            "format": "video/h264-mp4",
-            "frame_rate": 15
-          }
-        }
-      }
-    },
-    {
       "id": 20,
       "type": "LoadImage",
       "pos": [
-        703.4307320312498,
-        25.292402087402362
+        1318.2737525390667,
+        -22.338175012206996
       ],
       "size": {
         "0": 210.9286651611328,
         "1": 314
       },
       "flags": {},
-      "order": 6,
+      "order": 4,
       "mode": 0,
       "outputs": [
         {
@@ -662,124 +242,18 @@
       ]
     },
     {
-      "id": 28,
-      "type": "AdvancedLivePortrait",
-      "pos": [
-        1824.4893678710996,
-        860.0075893554671
-      ],
-      "size": [
-        235.1999969482422,
-        628.0000305175781
-      ],
-      "flags": {},
-      "order": 12,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "src_images",
-          "type": "IMAGE",
-          "link": 32
-        },
-        {
-          "name": "motion_link",
-          "type": "EDITOR_LINK",
-          "link": null
-        },
-        {
-          "name": "driving_images",
-          "type": "IMAGE",
-          "link": 31
-        }
-      ],
-      "outputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "links": [
-            33
-          ],
-          "shape": 3,
-          "slot_index": 0
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "AdvancedLivePortrait"
-      },
-      "widgets_values": [
-        0,
-        0,
-        2,
-        "",
-        ""
-      ]
-    },
-    {
-      "id": 23,
-      "type": "AdvancedLivePortrait",
-      "pos": [
-        1896.174414062501,
-        71.12568228759817
-      ],
-      "size": [
-        235.1999969482422,
-        628
-      ],
-      "flags": {},
-      "order": 8,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "src_images",
-          "type": "IMAGE",
-          "link": 27
-        },
-        {
-          "name": "motion_link",
-          "type": "EDITOR_LINK",
-          "link": null
-        },
-        {
-          "name": "driving_images",
-          "type": "IMAGE",
-          "link": 28
-        }
-      ],
-      "outputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "links": [
-            29
-          ],
-          "shape": 3,
-          "slot_index": 0
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "AdvancedLivePortrait"
-      },
-      "widgets_values": [
-        0,
-        0,
-        2,
-        "",
-        ""
-      ]
-    },
-    {
       "id": 14,
       "type": "ExpressionEditor",
       "pos": [
-        352.9947983764647,
-        46.43602139282229
+        931.634000524902,
+        -3.1228280700683335
       ],
-      "size": [
-        210,
-        666
-      ],
+      "size": {
+        "0": 210,
+        "1": 666
+      },
       "flags": {},
-      "order": 7,
+      "order": 5,
       "mode": 0,
       "inputs": [
         {
@@ -842,7 +316,288 @@
         0,
         1,
         1,
-        2
+        1.7000000000000002
+      ]
+    },
+    {
+      "id": 29,
+      "type": "VHS_VideoCombine",
+      "pos": [
+        1706.7501000000009,
+        796.943396582031
+      ],
+      "size": [
+        272.9300842285156,
+        576.9300842285156
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 35
+        },
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": null
+        },
+        {
+          "name": "meta_batch",
+          "type": "VHS_BatchManager",
+          "link": null
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Filenames",
+          "type": "VHS_FILENAMES",
+          "links": null,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VHS_VideoCombine"
+      },
+      "widgets_values": {
+        "frame_rate": 15,
+        "loop_count": 0,
+        "filename_prefix": "AdvancedLivePortrait",
+        "format": "video/h264-mp4",
+        "pix_fmt": "yuv420p",
+        "crf": 19,
+        "save_metadata": true,
+        "pingpong": false,
+        "save_output": false,
+        "videopreview": {
+          "hidden": false,
+          "paused": false,
+          "params": {
+            "filename": "AdvancedLivePortrait_00009.mp4",
+            "subfolder": "",
+            "type": "temp",
+            "format": "video/h264-mp4",
+            "frame_rate": 15
+          }
+        }
+      }
+    },
+    {
+      "id": 28,
+      "type": "AdvancedLivePortrait",
+      "pos": [
+        1401.2394678711005,
+        798.9509859374981
+      ],
+      "size": {
+        "0": 235.1999969482422,
+        "1": 628
+      },
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "src_images",
+          "type": "IMAGE",
+          "link": 38
+        },
+        {
+          "name": "motion_link",
+          "type": "EDITOR_LINK",
+          "link": null
+        },
+        {
+          "name": "driving_images",
+          "type": "IMAGE",
+          "link": 31
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": [
+            35
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "AdvancedLivePortrait"
+      },
+      "widgets_values": [
+        0,
+        0,
+        1.7000000000000002,
+        "",
+        ""
+      ]
+    },
+    {
+      "id": 21,
+      "type": "ExpressionEditor",
+      "pos": [
+        1601.2737525390667,
+        -32.33817501220699
+      ],
+      "size": {
+        "0": 210,
+        "1": 666
+      },
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "src_image",
+          "type": "IMAGE",
+          "link": 26
+        },
+        {
+          "name": "motion_link",
+          "type": "EDITOR_LINK",
+          "link": null
+        },
+        {
+          "name": "sample_image",
+          "type": "IMAGE",
+          "link": 25
+        },
+        {
+          "name": "add_exp",
+          "type": "EXP_DATA",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": null,
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "motion_link",
+          "type": "EDITOR_LINK",
+          "links": null,
+          "shape": 3
+        },
+        {
+          "name": "save_exp",
+          "type": "EXP_DATA",
+          "links": null,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ExpressionEditor"
+      },
+      "widgets_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1.7000000000000002
+      ]
+    },
+    {
+      "id": 30,
+      "type": "ExpressionEditor",
+      "pos": [
+        864.2394678710932,
+        788.9509859374982
+      ],
+      "size": {
+        "0": 210,
+        "1": 666
+      },
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "src_image",
+          "type": "IMAGE",
+          "link": 30
+        },
+        {
+          "name": "motion_link",
+          "type": "EDITOR_LINK",
+          "link": null
+        },
+        {
+          "name": "sample_image",
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "add_exp",
+          "type": "EXP_DATA",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            38
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "motion_link",
+          "type": "EDITOR_LINK",
+          "links": null,
+          "shape": 3
+        },
+        {
+          "name": "save_exp",
+          "type": "EXP_DATA",
+          "links": null,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ExpressionEditor"
+      },
+      "widgets_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1.3,
+        1,
+        1,
+        1.7000000000000002
       ]
     }
   ],
@@ -872,30 +627,6 @@
       "IMAGE"
     ],
     [
-      27,
-      22,
-      0,
-      23,
-      0,
-      "IMAGE"
-    ],
-    [
-      28,
-      24,
-      0,
-      23,
-      2,
-      "IMAGE"
-    ],
-    [
-      29,
-      23,
-      0,
-      25,
-      0,
-      "IMAGE"
-    ],
-    [
       30,
       26,
       0,
@@ -912,18 +643,18 @@
       "IMAGE"
     ],
     [
-      32,
-      30,
-      0,
+      35,
       28,
+      0,
+      29,
       0,
       "IMAGE"
     ],
     [
-      33,
-      28,
+      38,
+      30,
       0,
-      29,
+      28,
       0,
       "IMAGE"
     ]
@@ -932,8 +663,8 @@
     {
       "title": "Simple facial expression editing",
       "bounding": [
-        29,
-        -52,
+        608,
+        -102,
         571,
         768
       ],
@@ -943,8 +674,8 @@
     {
       "title": "Extracting facial expressions from photos",
       "bounding": [
-        634,
-        -52,
+        1249,
+        -100,
         605,
         753
       ],
@@ -952,23 +683,12 @@
       "font_size": 30
     },
     {
-      "title": "Live Portait",
-      "bounding": [
-        1320,
-        -14,
-        1193,
-        705
-      ],
-      "color": "#3f789e",
-      "font_size": 30
-    },
-    {
       "title": "Live Portrait with facial expression editing",
       "bounding": [
-        1021,
-        763,
-        1449,
-        771
+        598,
+        701,
+        1412,
+        767
       ],
       "color": "#3f789e",
       "font_size": 30
@@ -977,10 +697,10 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.751314800901578,
+      "scale": 0.9090909090909091,
       "offset": [
-        408.91997303598856,
-        268.57718967671127
+        213.02298586006117,
+        -49.46441845818874
       ]
     }
   },
