@@ -651,7 +651,8 @@ class AdvancedLivePortrait:
             "required": {
                 "retargeting_eyes": ("FLOAT", {"default": 0, "min": 0, "max": 1, "step": 0.01}),
                 "retargeting_mouth": ("FLOAT", {"default": 0, "min": 0, "max": 1, "step": 0.01}),
-                "crop_factor": ("FLOAT", {"default": 1.7, "min": 1, "max": 2.5, "step": 0.1}),
+                "crop_factor": ("FLOAT", {"default": crop_factor_default,
+                                          "min": crop_factor_min, "max": crop_factor_max, "step": 0.1}),
                 "turn_on": ("BOOLEAN", {"default": True}),
                 "command": ("STRING", {"multiline": True, "default": ""}),
             },
