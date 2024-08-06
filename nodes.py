@@ -33,6 +33,14 @@ from .LivePortrait.modules.stitching_retargeting_network import StitchingRetarge
 from collections import OrderedDict
 
 
+def get_device():
+    if torch.cuda.is_available():
+        return torch.device('cuda')
+    elif torch.backends.mps.is_available():
+        return torch.device('mps')
+    else:
+        return torch.device('cpu')
+
 def tensor2pil(image):
     return Image.fromarray(np.clip(255. * image.cpu().numpy().squeeze(), 0, 255).astype(np.uint8))
 def pil2tensor(image):
@@ -128,7 +136,9 @@ class LP_Engine:
                                key.startswith(prefix)}
         return filtered_checkpoint
 
-    def load_model(self, model_config, device, model_type):
+    def load_model(self, model_config, model_type):
+
+        device = get_device()
 
         if model_type == 'stitching_retargeting_module':
             ckpt_path = os.path.join(get_model_dir("liveportrait"), "retargeting_models", model_type + ".pth")
@@ -144,13 +154,13 @@ class LP_Engine:
                 "https://huggingface.co/Kijai/LivePortrait_safetensors/resolve/main/" + model_type + ".safetensors")
         model_params = model_config['model_params'][f'{model_type}_params']
         if model_type == 'appearance_feature_extractor':
-            model = AppearanceFeatureExtractor(**model_params).cuda(device)
+            model = AppearanceFeatureExtractor(**model_params).to(device)
         elif model_type == 'motion_extractor':
-            model = MotionExtractor(**model_params).cuda(device)
+            model = MotionExtractor(**model_params).to(device)
         elif model_type == 'warping_module':
-            model = WarpingNetwork(**model_params).cuda(device)
+            model = WarpingNetwork(**model_params).to(device)
         elif model_type == 'spade_generator':
-            model = SPADEDecoder(**model_params).cuda(device)
+            model = SPADEDecoder(**model_params).to(device)
         elif model_type == 'stitching_retargeting_module':
             # Special handling for stitching and retargeting module
             config = model_config['model_params']['stitching_retargeting_module_params']
@@ -197,12 +207,11 @@ class LP_Engine:
         model_config_path = os.path.join(current_directory, 'LivePortrait', 'config', 'models.yaml')
         model_config = yaml.safe_load(open(model_config_path, 'r'))
 
-        device_id = 0
-        appearance_feature_extractor = self.load_model(model_config, device_id, 'appearance_feature_extractor')
-        motion_extractor = self.load_model(model_config, device_id, 'motion_extractor')
-        warping_module = self.load_model(model_config, device_id, 'warping_module')
-        spade_generator = self.load_model(model_config, device_id, 'spade_generator')
-        stitching_retargeting_module = self.load_model(model_config, device_id, 'stitching_retargeting_module')
+        appearance_feature_extractor = self.load_model(model_config, 'appearance_feature_extractor')
+        motion_extractor = self.load_model(model_config, 'motion_extractor')
+        warping_module = self.load_model(model_config, 'warping_module')
+        spade_generator = self.load_model(model_config, 'spade_generator')
+        stitching_retargeting_module = self.load_model(model_config, 'stitching_retargeting_module')
 
         self.pipeline = LivePortraitWrapper(InferenceConfig(), appearance_feature_extractor, motion_extractor, warping_module, spade_generator, stitching_retargeting_module)
 
@@ -325,7 +334,7 @@ class LP_Engine:
             raise ValueError(f'img ndim should be 3 or 4: {x.ndim}')
         x = np.clip(x, 0, 1)  # clip to 0~1
         x = torch.from_numpy(x).permute(0, 3, 1, 2)  # 1xHxWx3 -> 1x3xHxW
-        x = x.cuda()
+        x = x.to(get_device())
         return x
 
     def GetMaskImg(self):
@@ -467,7 +476,7 @@ class ExpressionSet:
             self.s = erst[2]
             self.t = erst[3]
         else:
-            self.e = torch.from_numpy(np.zeros((1, 21, 3))).float().to(device='cuda')
+            self.e = torch.from_numpy(np.zeros((1, 21, 3))).float().to(get_device())
             self.r = torch.Tensor([0, 0, 0])
             self.s = 0
             self.t = 0
