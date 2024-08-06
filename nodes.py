@@ -217,19 +217,20 @@ class LP_Engine:
 
         return self.detect_model
 
-    def detect_face(self, image_rgb, crop_factor):
-
-        bbox_drop_size = 10
+    def get_face_bboxes(self, image_rgb):
         detect_model = self.get_detect_model()
-
         pred = detect_model(image_rgb, conf=0.7, device="")
-        bboxes = pred[0].boxes.xyxy.cpu().numpy()
+        return pred[0].boxes.xyxy.cpu().numpy()
 
+    def detect_face(self, image_rgb, crop_factor, sort = True):
+        bboxes = self.get_face_bboxes(image_rgb)
         w, h = get_rgb_size(image_rgb)
 
         for x1, y1, x2, y2 in bboxes:
             bbox_w = x2 - x1
             bbox_h = y2 - y1
+
+            if bbox_w < 30: continue
 
             crop_w = bbox_w * crop_factor
             crop_h = bbox_h * crop_factor
@@ -244,6 +245,9 @@ class LP_Engine:
             new_x2 = kernel_x + crop_w / 2
             new_y1 = kernel_y - crop_h / 2
             new_y2 = kernel_y + crop_h / 2
+
+            if not sort:
+                return [int(new_x1), int(new_y1), int(new_x2), int(new_y2)]
 
             if new_x1 < 0:
                 new_x2 -= new_x1
@@ -377,7 +381,7 @@ class LP_Engine:
 
         out_list = []
         for f_img in f_img_np:
-            i_d = pipeline.prepare_source(f_img)
+            i_d = self.prepare_src_image(f_img)
             d_info = pipeline.get_kp_info(i_d)
             out_list.append(d_info)
 
@@ -433,6 +437,8 @@ class LP_Engine:
         x_d_new[0, 13, 1] += eyes * 0.0003
         x_d_new[0, 15, 1] += eyes * -0.001
         x_d_new[0, 16, 1] += eyes * 0.0003
+        x_d_new[0, 1, 1] += eyes * -0.00025
+        x_d_new[0, 2, 1] += eyes * 0.00025
 
 
         if 0 < eyebrow:
@@ -584,7 +590,7 @@ class ExpData:
         for i in range(5):
             idx = int(codes[i] / 10)
             r = codes[i] % 10
-            es.exp[0, idx, r] += values[i] * 0.001
+            es.e[0, idx, r] += values[i] * 0.001
 
         return (es,)
 
@@ -750,7 +756,6 @@ class AdvancedLivePortrait:
 
             if i < cmd_length:
                 cmd = cmd_list[cmd_idx]
-                #cmd = Command()#지울거
                 if 0 < cmd.change:
                     cmd.change -= 1
                     c_i_es.add(cmd.es)
@@ -886,7 +891,7 @@ class ExpressionEditor:
                 self.sample_image = sample_image
                 d_image_np = (sample_image * 255).byte().numpy()
                 d_face = g_engine.crop_face(d_image_np[0], 1.7)
-                i_d = pipeline.prepare_source(d_face)
+                i_d = g_engine.prepare_src_image(d_face)
                 self.d_info = pipeline.get_kp_info(i_d)
                 self.d_info['exp'][0, 5, 0] = 0
                 self.d_info['exp'][0, 5, 1] = 0

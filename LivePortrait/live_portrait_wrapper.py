@@ -26,27 +26,6 @@ class LivePortraitWrapper(object):
         self.device_id = cfg.device_id
         self.timer = Timer()
 
-    def prepare_source(self, img: np.ndarray) -> torch.Tensor:
-        """ construct the input as standard
-        img: HxWx3, uint8, 256x256
-        """
-        h, w = img.shape[:2]
-        if h != self.cfg.input_shape[0] or w != self.cfg.input_shape[1]:
-            x = cv2.resize(img, (self.cfg.input_shape[0], self.cfg.input_shape[1]))
-        else:
-            x = img.copy()
-
-        if x.ndim == 3:
-            x = x[np.newaxis].astype(np.float32) / 255.  # HxWx3 -> 1xHxWx3, normalized to 0~1
-        elif x.ndim == 4:
-            x = x.astype(np.float32) / 255.  # BxHxWx3, normalized to 0~1
-        else:
-            raise ValueError(f'img ndim should be 3 or 4: {x.ndim}')
-        x = np.clip(x, 0, 1)  # clip to 0~1
-        x = torch.from_numpy(x).permute(0, 3, 1, 2)  # 1xHxWx3 -> 1x3xHxW
-        x = x.cuda(self.device_id)
-        return x
-
     def prepare_driving_videos(self, imgs) -> torch.Tensor:
         """ construct the input as standard
         imgs: NxBxHxWx3, uint8
