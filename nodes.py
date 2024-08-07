@@ -775,6 +775,7 @@ class AdvancedLivePortrait:
 
                 if d_0_es is None:
                     d_0_es = ExpressionSet(erst = (d_i_info['exp'], d_i_r, d_i_info['scale'], d_i_info['t']))
+
                     retargeting(s_es.e, d_0_es.e, retargeting_eyes, (11, 13, 15, 16))
                     retargeting(s_es.e, d_0_es.e, retargeting_mouth, (14, 17, 19, 20))
 
@@ -830,7 +831,8 @@ class ExpressionEditor:
                 "smile": ("FLOAT", {"default": 0, "min": -0.3, "max": 1.3, "step": 0.01, "display": display}),
 
                 "src_ratio": ("FLOAT", {"default": 1, "min": 0, "max": 1, "step": 0.01, "display": display}),
-                "sample_ratio": ("FLOAT", {"default": 1, "min": 0, "max": 1, "step": 0.01, "display": display}),
+                "sample_ratio": ("FLOAT", {"default": 1, "min": -0.2, "max": 1.2, "step": 0.01, "display": display}),
+                "sample_parts": (["OnlyExpression", "OnlyRotation", "OnlyMouth", "OnlyEyes", "All"],),
                 "crop_factor": ("FLOAT", {"default": crop_factor_default,
                                           "min": crop_factor_min, "max": crop_factor_max, "step": 0.1}),
             },
@@ -853,7 +855,7 @@ class ExpressionEditor:
     # OUTPUT_IS_LIST = (False,)
 
     def run(self, rotate_pitch, rotate_yaw, rotate_roll, blink, eyebrow, wink, pupil_x, pupil_y, aaa, eee, woo, smile,
-            src_ratio, sample_ratio, crop_factor, src_image=None, sample_image=None, motion_link=None, add_exp=None):
+            src_ratio, sample_ratio, sample_parts, crop_factor, src_image=None, sample_image=None, motion_link=None, add_exp=None):
         rotate_yaw = -rotate_yaw
 
         new_editor_link = None
@@ -891,8 +893,17 @@ class ExpressionEditor:
                 self.d_info['exp'][0, 5, 0] = 0
                 self.d_info['exp'][0, 5, 1] = 0
 
-            # delta_new += s_exp * (1 - sample_ratio) + self.d_info['exp'] * sample_ratio
-            es.e += self.d_info['exp'] * sample_ratio
+            # "OnlyExpression", "OnlyRotation", "OnlyMouth", "OnlyEyes", "All"
+            if sample_parts == "OnlyExpression" or sample_parts == "All":
+                es.e += self.d_info['exp'] * sample_ratio
+            if sample_parts == "OnlyRotation" or sample_parts == "All":
+                rotate_pitch += self.d_info['pitch'] * sample_ratio
+                rotate_yaw += self.d_info['yaw'] * sample_ratio
+                rotate_roll += self.d_info['roll'] * sample_ratio
+            elif sample_parts == "OnlyMouth":
+                retargeting(es.e, self.d_info['exp'], sample_ratio, (14, 17, 19, 20))
+            elif sample_parts == "OnlyEyes":
+                retargeting(es.e, self.d_info['exp'], sample_ratio, (1, 2, 11, 13, 15, 16))
 
         es.r = g_engine.calc_fe(es.e, blink, eyebrow, wink, pupil_x, pupil_y, aaa, eee, woo, smile,
                                   rotate_pitch, rotate_yaw, rotate_roll)
