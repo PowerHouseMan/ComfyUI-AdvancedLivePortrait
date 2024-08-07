@@ -10,18 +10,12 @@ import time
 import copy
 import dill
 import yaml
-import random
-from torchvision import transforms
 from ultralytics import YOLO
-#import math
-#import torch.nn.functional as torchfn
-#from scipy.spatial.transform import Rotation as R
 
 current_file_path = os.path.abspath(__file__)
 current_directory = os.path.dirname(current_file_path)
-#sys.path.append(current_directory)
+
 from .LivePortrait.live_portrait_wrapper import LivePortraitWrapper
-from .LivePortrait.utils.rprint import rlog as log
 from .LivePortrait.utils.camera import get_rotation_matrix
 from .LivePortrait.config.inference_config import InferenceConfig
 
@@ -32,14 +26,20 @@ from .LivePortrait.modules.appearance_feature_extractor import AppearanceFeature
 from .LivePortrait.modules.stitching_retargeting_network import StitchingRetargetingNetwork
 from collections import OrderedDict
 
-
+cur_device = None
 def get_device():
-    if torch.cuda.is_available():
-        return torch.device('cuda')
-    elif torch.backends.mps.is_available():
-        return torch.device('mps')
-    else:
-        return torch.device('cpu')
+    global cur_device
+    if cur_device == None:
+        if torch.cuda.is_available():
+            cur_device = torch.device('cuda')
+            print("Uses CUDA device.")
+        elif torch.backends.mps.is_available():
+            cur_device = torch.device('mps')
+            print("Uses MPS device.")
+        else:
+            cur_device = torch.device('cpu')
+            print("Uses CPU device.")
+    return cur_device
 
 def tensor2pil(image):
     return Image.fromarray(np.clip(255. * image.cpu().numpy().squeeze(), 0, 255).astype(np.uint8))
@@ -164,7 +164,6 @@ class LP_Engine:
         elif model_type == 'stitching_retargeting_module':
             # Special handling for stitching and retargeting module
             config = model_config['model_params']['stitching_retargeting_module_params']
-            #checkpoint = torch.load(ckpt_path, map_location=lambda storage, loc: storage)
             checkpoint = comfy.utils.load_torch_file(ckpt_path)
 
             stitcher = StitchingRetargetingNetwork(**config.get('stitching'))
@@ -175,27 +174,14 @@ class LP_Engine:
             stitcher = stitcher.to(device)
             stitcher.eval()
 
-            # retargetor_lip = StitchingRetargetingNetwork(**config.get('lip'))
-            # retargetor_lip.load_state_dict(self.remove_ddp_dumplicate_key(checkpoint['retarget_mouth']))
-            # retargetor_lip = retargetor_lip.cuda(device)
-            # retargetor_lip.eval()
-            #
-            # retargetor_eye = StitchingRetargetingNetwork(**config.get('eye'))
-            # retargetor_eye.load_state_dict(self.remove_ddp_dumplicate_key(checkpoint['retarget_eye']))
-            # retargetor_eye = retargetor_eye.cuda(device)
-            # retargetor_eye.eval()
-
             return {
                 'stitching': stitcher,
-                #'lip': retargetor_lip,
-                #'eye': retargetor_eye
             }
         else:
             raise ValueError(f"Unknown model type: {model_type}")
 
 
         model.load_state_dict(comfy.utils.load_torch_file(ckpt_path))
-        #model.load_state_dict(torch.load(ckpt_path, map_location=lambda storage, loc: storage))
         model.eval()
         return model
 
