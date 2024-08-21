@@ -1,5 +1,15 @@
 # ComfyUI-AdvancedLivePortrait
 
+## Update
+
+8/21/2024
+
+You can create a video without a video.
+
+Track the face of the source video.
+
+The workflow has been updated.
+
 ## Introduction
 
 AdvancedLivePortrait is faster and has real-time preview
@@ -13,12 +23,6 @@ Insert facial expressions into videos.
 Create animations using multiple facial expressions.
 
 Extract facial expressions from sample photos.
-
-## Update
-
-Now you can partially extract facial expressions from samples.
-
-![parts_update](https://github.com/user-attachments/assets/5fff3027-ba12-4389-b3cb-abaea8d9c736)
 
 ## Installation
 
