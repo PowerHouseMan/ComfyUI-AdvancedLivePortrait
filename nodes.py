@@ -97,6 +97,11 @@ class LP_Engine:
     pipeline = None
     detect_model = None
     mask_img = None
+    temp_img_idx = 0
+
+    def get_temp_img_name(self):
+        self.temp_img_idx += 1
+        return "expression_edit_preview" + str(self.temp_img_idx) + ".png"
 
     def download_model(_, file_path, model_url):
         print('AdvancedLivePortrait: Downloading model...')
@@ -221,60 +226,76 @@ class LP_Engine:
         bboxes = self.get_face_bboxes(image_rgb)
         w, h = get_rgb_size(image_rgb)
 
+        print(f"w, h:{w, h}")
+
+        cx = w / 2
+        min_diff = w
+        best_box = None
         for x1, y1, x2, y2 in bboxes:
             bbox_w = x2 - x1
-            bbox_h = y2 - y1
-
             if bbox_w < 30: continue
+            diff = abs(cx - (x1 + bbox_w / 2))
+            if diff < min_diff:
+                best_box = [x1, y1, x2, y2]
+                print(f"diff, min_diff, best_box:{diff, min_diff, best_box}")
+                min_diff = diff
 
-            crop_w = bbox_w * crop_factor
-            crop_h = bbox_h * crop_factor
+        if best_box == None:
+            print("Failed to detect face!!")
+            return [0, 0, w, h]
 
-            crop_w = max(crop_h, crop_w)
-            crop_h = crop_w
+        x1, y1, x2, y2 = best_box
 
-            kernel_x = x1 + bbox_w / 2
-            kernel_y = y1 + bbox_h / 2
+        #for x1, y1, x2, y2 in bboxes:
+        bbox_w = x2 - x1
+        bbox_h = y2 - y1
 
-            new_x1 = kernel_x - crop_w / 2
-            new_x2 = kernel_x + crop_w / 2
-            new_y1 = kernel_y - crop_h / 2
-            new_y2 = kernel_y + crop_h / 2
+        crop_w = bbox_w * crop_factor
+        crop_h = bbox_h * crop_factor
 
-            if not sort:
-                return [int(new_x1), int(new_y1), int(new_x2), int(new_y2)]
+        crop_w = max(crop_h, crop_w)
+        crop_h = crop_w
 
+        kernel_x = int(x1 + bbox_w / 2)
+        kernel_y = int(y1 + bbox_h / 2)
+
+        new_x1 = int(kernel_x - crop_w / 2)
+        new_x2 = int(kernel_x + crop_w / 2)
+        new_y1 = int(kernel_y - crop_h / 2)
+        new_y2 = int(kernel_y + crop_h / 2)
+
+        if not sort:
+            return [int(new_x1), int(new_y1), int(new_x2), int(new_y2)]
+
+        if new_x1 < 0:
+            new_x2 -= new_x1
+            new_x1 = 0
+        elif w < new_x2:
+            new_x1 -= (new_x2 - w)
+            new_x2 = w
             if new_x1 < 0:
                 new_x2 -= new_x1
                 new_x1 = 0
-            elif w < new_x2:
-                new_x1 -= (new_x2 - w)
-                new_x2 = w
-                if new_x1 < 0:
-                    new_x2 -= new_x1
-                    new_x1 = 0
 
+        if new_y1 < 0:
+            new_y2 -= new_y1
+            new_y1 = 0
+        elif h < new_y2:
+            new_y1 -= (new_y2 - h)
+            new_y2 = h
             if new_y1 < 0:
                 new_y2 -= new_y1
                 new_y1 = 0
-            elif h < new_y2:
-                new_y1 -= (new_y2 - h)
-                new_y2 = h
-                if new_y1 < 0:
-                    new_y2 -= new_y1
-                    new_y1 = 0
 
-            if w < new_x2 and h < new_y2:
-                over_x = new_x2 - w
-                over_y = new_y2 - h
-                over_min = min(over_x, over_y)
-                new_x2 -= over_min
-                new_y2 -= over_min
+        if w < new_x2 and h < new_y2:
+            over_x = new_x2 - w
+            over_y = new_y2 - h
+            over_min = min(over_x, over_y)
+            new_x2 -= over_min
+            new_y2 -= over_min
 
-            return [int(new_x1), int(new_y1), int(new_x2), int(new_y2)]
+        return [int(new_x1), int(new_y1), int(new_x2), int(new_y2)]
 
-        print("Failed to detect face!!")
-        return [0, 0, w, h]
 
     def calc_face_region(self, square, dsize):
         region = copy.deepcopy(square)
@@ -336,26 +357,28 @@ class LP_Engine:
         if is_changed: face_img = self.expand_img(face_img, crop_region)
         return face_img
 
-    def prepare_source(self, source_image, crop_factor, is_video = False):
+    def prepare_source(self, source_image, crop_factor, is_video = False, tracking = False):
         print("Prepare source...")
         engine = self.get_pipeline()
         source_image_np = (source_image * 255).byte().numpy()
         img_rgb = source_image_np[0]
-        crop_region = self.detect_face(img_rgb, crop_factor)
-        face_region, is_changed = self.calc_face_region(crop_region, get_rgb_size(img_rgb))
-
-        s_x = (face_region[2] - face_region[0]) / 512.
-        s_y = (face_region[3] - face_region[1]) / 512.
-        crop_trans_m = create_transform_matrix(crop_region[0], crop_region[1], s_x, s_y)
-        mask_ori = cv2.warpAffine(self.GetMaskImg(), crop_trans_m, get_rgb_size(img_rgb), cv2.INTER_LINEAR)
-        mask_ori = mask_ori.astype(np.float32) / 255.
-
-        if is_changed:
-            s = (crop_region[2] - crop_region[0]) / 512.
-            crop_trans_m = create_transform_matrix(crop_region[0], crop_region[1], s, s)
 
         psi_list = []
         for img_rgb in source_image_np:
+            if tracking or len(psi_list) == 0:
+                crop_region = self.detect_face(img_rgb, crop_factor)
+                face_region, is_changed = self.calc_face_region(crop_region, get_rgb_size(img_rgb))
+
+                s_x = (face_region[2] - face_region[0]) / 512.
+                s_y = (face_region[3] - face_region[1]) / 512.
+                crop_trans_m = create_transform_matrix(crop_region[0], crop_region[1], s_x, s_y)
+                mask_ori = cv2.warpAffine(self.GetMaskImg(), crop_trans_m, get_rgb_size(img_rgb), cv2.INTER_LINEAR)
+                mask_ori = mask_ori.astype(np.float32) / 255.
+
+                if is_changed:
+                    s = (crop_region[2] - crop_region[0]) / 512.
+                    crop_trans_m = create_transform_matrix(crop_region[0], crop_region[1], s, s)
+
             face_img = rgb_crop(img_rgb, face_region)
             if is_changed: face_img = self.expand_img(face_img, crop_region)
             i_s = self.prepare_src_image(face_img)
@@ -645,6 +668,8 @@ class AdvancedLivePortrait:
                 "crop_factor": ("FLOAT", {"default": crop_factor_default,
                                           "min": crop_factor_min, "max": crop_factor_max, "step": 0.1}),
                 "turn_on": ("BOOLEAN", {"default": True}),
+                "tracking_src_vid": ("BOOLEAN", {"default": False}),
+                "animate_without_vid": ("BOOLEAN", {"default": False}),
                 "command": ("STRING", {"multiline": True, "default": ""}),
             },
             "optional": {
@@ -698,7 +723,7 @@ class AdvancedLivePortrait:
         return cmd_list, total_length
 
 
-    def run(self, retargeting_eyes, retargeting_mouth, turn_on, command, crop_factor,
+    def run(self, retargeting_eyes, retargeting_mouth, turn_on, tracking_src_vid, animate_without_vid, command, crop_factor,
             src_images=None, driving_images=None, motion_link=None):
         if turn_on == False: return (None,None)
         src_length = 1
@@ -714,7 +739,7 @@ class AdvancedLivePortrait:
                 self.crop_factor = crop_factor
                 self.src_images = src_images
                 if 1 < src_length:
-                    self.psi_list = g_engine.prepare_source(src_images, crop_factor, True)
+                    self.psi_list = g_engine.prepare_source(src_images, crop_factor, True, tracking_src_vid)
                 else:
                     self.psi_list = [g_engine.prepare_source(src_images, crop_factor)]
 
@@ -730,8 +755,10 @@ class AdvancedLivePortrait:
                 self.driving_values = g_engine.prepare_driving_video(driving_images)
             driving_length = len(self.driving_values)
 
-        #total_length = max(driving_length, cmd_length, src_length)
         total_length = max(driving_length, src_length)
+
+        if animate_without_vid:
+            total_length = max(total_length, cmd_length)
 
         c_i_es = ExpressionSet()
         c_o_es = ExpressionSet()
@@ -925,7 +952,7 @@ class ExpressionEditor:
 
         out_img = pil2tensor(out)
 
-        filename = "fe_edit_preview.png"
+        filename = g_engine.get_temp_img_name() #"fe_edit_preview.png"
         folder_paths.get_save_image_path(filename, folder_paths.get_temp_directory())
         img = Image.fromarray(crop_out)
         img.save(os.path.join(folder_paths.get_temp_directory(), filename), compress_level=1)

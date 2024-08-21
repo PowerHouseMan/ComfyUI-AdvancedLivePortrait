@@ -3,96 +3,56 @@
   "last_link_id": 8,
   "nodes": [
     {
-      "id": 8,
-      "type": "ExpressionEditor",
+      "id": 3,
+      "type": "LoadImage",
       "pos": [
-        1300,
-        288
+        736,
+        299
       ],
-      "size": [
-        210,
-        666.122442592595
-      ],
+      "size": {
+        "0": 315,
+        "1": 314
+      },
       "flags": {},
-      "order": 7,
+      "order": 0,
       "mode": 0,
-      "inputs": [
-        {
-          "name": "src_image",
-          "type": "IMAGE",
-          "link": null
-        },
-        {
-          "name": "motion_link",
-          "type": "EDITOR_LINK",
-          "link": 5
-        },
-        {
-          "name": "sample_image",
-          "type": "IMAGE",
-          "link": null
-        },
-        {
-          "name": "add_exp",
-          "type": "EXP_DATA",
-          "link": null
-        }
-      ],
       "outputs": [
         {
-          "name": "image",
+          "name": "IMAGE",
           "type": "IMAGE",
-          "links": null,
+          "links": [
+            3
+          ],
+          "slot_index": 0,
           "shape": 3
         },
         {
-          "name": "motion_link",
-          "type": "EDITOR_LINK",
-          "links": [
-            6
-          ],
-          "shape": 3,
-          "slot_index": 1
-        },
-        {
-          "name": "save_exp",
-          "type": "EXP_DATA",
+          "name": "MASK",
+          "type": "MASK",
           "links": null,
+          "slot_index": 1,
           "shape": 3
         }
       ],
       "properties": {
-        "Node name for S&R": "ExpressionEditor"
+        "Node name for S&R": "LoadImage"
       },
       "widgets_values": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        15,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1.7000000000000002
+        "source_image.png",
+        "image"
       ]
     },
     {
       "id": 6,
       "type": "ExpressionEditor",
       "pos": [
-        1049,
-        286
+        1085,
+        294
       ],
-      "size": [
-        210,
-        669.4464425925951
-      ],
+      "size": {
+        "0": 210,
+        "1": 690
+      },
       "flags": {},
       "order": 6,
       "mode": 0,
@@ -131,8 +91,8 @@
           "links": [
             5
           ],
-          "shape": 3,
-          "slot_index": 1
+          "slot_index": 1,
+          "shape": 3
         },
         {
           "name": "save_exp",
@@ -159,22 +119,159 @@
         0,
         1,
         1,
+        "OnlyExpression",
         1.7000000000000002
+      ]
+    },
+    {
+      "id": 7,
+      "type": "AdvancedLivePortrait",
+      "pos": [
+        1845,
+        304
+      ],
+      "size": {
+        "0": 235.1999969482422,
+        "1": 523.0364379882812
+      },
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "src_images",
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "motion_link",
+          "type": "EDITOR_LINK",
+          "link": 6
+        },
+        {
+          "name": "driving_images",
+          "type": "IMAGE",
+          "link": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": [
+            8
+          ],
+          "slot_index": 0,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "AdvancedLivePortrait"
+      },
+      "widgets_values": [
+        0,
+        0,
+        1.7000000000000002,
+        "1 = 1:10\n2 = 5:10\n0 = 2:50\n1 = 2:0",
+        "1 = 1:10\n2 = 5:10\n0 = 2:50\n1 = 2:0",
+        false,
+        "1 = 1:10\n2 = 5:10\n0 = 2:50\n1 = 2:0"
+      ]
+    },
+    {
+      "id": 8,
+      "type": "ExpressionEditor",
+      "pos": [
+        1342,
+        304
+      ],
+      "size": {
+        "0": 210,
+        "1": 690
+      },
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "src_image",
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "motion_link",
+          "type": "EDITOR_LINK",
+          "link": 5
+        },
+        {
+          "name": "sample_image",
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "add_exp",
+          "type": "EXP_DATA",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": null,
+          "shape": 3
+        },
+        {
+          "name": "motion_link",
+          "type": "EDITOR_LINK",
+          "links": [
+            6
+          ],
+          "slot_index": 1,
+          "shape": 3
+        },
+        {
+          "name": "save_exp",
+          "type": "EXP_DATA",
+          "links": null,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ExpressionEditor"
+      },
+      "widgets_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        15,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        "OnlyExpression",
+        1.7
       ]
     },
     {
       "id": 9,
       "type": "VHS_LoadVideo",
       "pos": [
-        1548,
-        378
+        1570,
+        399
       ],
       "size": [
         235.1999969482422,
         491.1999969482422
       ],
       "flags": {},
-      "order": 0,
+      "order": 1,
       "mode": 0,
       "inputs": [
         {
@@ -195,8 +292,8 @@
           "links": [
             7
           ],
-          "shape": 3,
-          "slot_index": 0
+          "slot_index": 0,
+          "shape": 3
         },
         {
           "name": "frame_count",
@@ -246,196 +343,11 @@
       }
     },
     {
-      "id": 3,
-      "type": "LoadImage",
-      "pos": [
-        670,
-        283
-      ],
-      "size": {
-        "0": 315,
-        "1": 314
-      },
-      "flags": {},
-      "order": 1,
-      "mode": 0,
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "links": [
-            3
-          ],
-          "shape": 3,
-          "slot_index": 0
-        },
-        {
-          "name": "MASK",
-          "type": "MASK",
-          "links": null,
-          "shape": 3,
-          "slot_index": 1
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "LoadImage"
-      },
-      "widgets_values": [
-        "source_image.png",
-        "image"
-      ]
-    },
-    {
-      "id": 14,
-      "type": "Note",
-      "pos": [
-        667,
-        633
-      ],
-      "size": {
-        "0": 210,
-        "1": 58
-      },
-      "flags": {},
-      "order": 2,
-      "mode": 0,
-      "properties": {
-        "text": ""
-      },
-      "widgets_values": [
-        "orginal src : motion0\n"
-      ],
-      "color": "#432",
-      "bgcolor": "#653"
-    },
-    {
-      "id": 12,
-      "type": "Note",
-      "pos": [
-        1014,
-        973
-      ],
-      "size": [
-        210,
-        58
-      ],
-      "flags": {},
-      "order": 3,
-      "mode": 0,
-      "properties": {
-        "text": ""
-      },
-      "widgets_values": [
-        "motion1\n"
-      ],
-      "color": "#432",
-      "bgcolor": "#653"
-    },
-    {
-      "id": 13,
-      "type": "Note",
-      "pos": [
-        1301,
-        974
-      ],
-      "size": {
-        "0": 210,
-        "1": 58
-      },
-      "flags": {},
-      "order": 4,
-      "mode": 0,
-      "properties": {
-        "text": ""
-      },
-      "widgets_values": [
-        "motion2\n"
-      ],
-      "color": "#432",
-      "bgcolor": "#653"
-    },
-    {
-      "id": 7,
-      "type": "AdvancedLivePortrait",
-      "pos": [
-        1824,
-        340
-      ],
-      "size": [
-        235.1999969482422,
-        523.0364425925951
-      ],
-      "flags": {},
-      "order": 8,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "src_images",
-          "type": "IMAGE",
-          "link": null
-        },
-        {
-          "name": "motion_link",
-          "type": "EDITOR_LINK",
-          "link": 6
-        },
-        {
-          "name": "driving_images",
-          "type": "IMAGE",
-          "link": 7
-        }
-      ],
-      "outputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "links": [
-            8
-          ],
-          "shape": 3,
-          "slot_index": 0
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "AdvancedLivePortrait"
-      },
-      "widgets_values": [
-        0,
-        0,
-        1.7000000000000002,
-        "1 = 1:10\n2 = 5:10\n0 = 2:50\n1 = 2:0",
-        "1 = 1:10\n2 = 5:10\n0 = 2:50\n1 = 2:0"
-      ]
-    },
-    {
-      "id": 11,
-      "type": "Note",
-      "pos": [
-        1823,
-        892
-      ],
-      "size": [
-        539.0599993763458,
-        184.96444259259488
-      ],
-      "flags": {},
-      "order": 5,
-      "mode": 0,
-      "properties": {
-        "text": ""
-      },
-      "widgets_values": [
-        "Command Description\n1 = 1:10\n2 = 5:10\n0 = 2:50\n1 = 2:0\n\n[Motion index] = [Changing frame length] : [Length of frames waiting for next motion]\n\nfor example, second line -> 2 = 5:10\nChange over 5 frames with motion 2, and wait for the next motion for 10 frames\n\n"
-      ],
-      "color": "#432",
-      "bgcolor": "#653"
-    },
-    {
       "id": 10,
       "type": "VHS_VideoCombine",
       "pos": [
-        2122,
-        244
+        2117,
+        305
       ],
       "size": [
         261.79998779296875,
@@ -480,25 +392,119 @@
       "widgets_values": {
         "frame_rate": 15,
         "loop_count": 0,
-        "filename_prefix": "AnimateDiff",
+        "filename_prefix": "AdvancedLivePortrait",
         "format": "video/h264-mp4",
         "pix_fmt": "yuv420p",
         "crf": 19,
         "save_metadata": true,
         "pingpong": false,
-        "save_output": false,
+        "save_output": true,
         "videopreview": {
           "hidden": false,
           "paused": false,
           "params": {
-            "filename": "AnimateDiff_00003.mp4",
+            "filename": "AdvancedLivePortrait_00023.mp4",
             "subfolder": "",
-            "type": "temp",
+            "type": "output",
             "format": "video/h264-mp4",
             "frame_rate": 15
           }
         }
       }
+    },
+    {
+      "id": 11,
+      "type": "Note",
+      "pos": [
+        1834,
+        935
+      ],
+      "size": {
+        "0": 539.0599975585938,
+        "1": 184.96444702148438
+      },
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "properties": {
+        "text": ""
+      },
+      "widgets_values": [
+        "Command Description\n1 = 1:10\n2 = 5:10\n0 = 2:50\n1 = 2:0\n\n[Motion index] = [Changing frame length] : [Length of frames waiting for next motion]\n\nfor example, second line -> 2 = 5:10\nChange over 5 frames with motion 2, and wait for the next motion for 10 frames\n\n"
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 12,
+      "type": "Note",
+      "pos": [
+        1089,
+        1038
+      ],
+      "size": {
+        "0": 210,
+        "1": 58
+      },
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "properties": {
+        "text": ""
+      },
+      "widgets_values": [
+        "motion1\n"
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 13,
+      "type": "Note",
+      "pos": [
+        1341,
+        1041
+      ],
+      "size": {
+        "0": 210,
+        "1": 58
+      },
+      "flags": {
+        "collapsed": false
+      },
+      "order": 3,
+      "mode": 0,
+      "properties": {
+        "text": ""
+      },
+      "widgets_values": [
+        "motion2\n"
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 14,
+      "type": "Note",
+      "pos": [
+        776,
+        684
+      ],
+      "size": {
+        "0": 210,
+        "1": 58
+      },
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "properties": {
+        "text": ""
+      },
+      "widgets_values": [
+        "orginal src : motion0\n"
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
     }
   ],
   "links": [
@@ -547,10 +553,10 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 1,
+      "scale": 1.1000000000000005,
       "offset": [
-        -410.5455448308912,
-        -80.52844259259504
+        -678.8740830330757,
+        -35.741089089667945
       ]
     }
   },
