@@ -14,6 +14,12 @@ Create animations using multiple facial expressions.
 
 Extract facial expressions from sample photos.
 
+## Update
+
+Now you can partially extract facial expressions from samples.
+
+![parts_update](https://github.com/user-attachments/assets/5fff3027-ba12-4389-b3cb-abaea8d9c736)
+
 ## Installation
 
 This project has been registered with ComfyUI-Manager. Now you can install it automatically using the manager.
