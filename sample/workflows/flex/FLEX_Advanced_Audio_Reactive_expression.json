@@ -977,8 +977,8 @@
         280
       ],
       "size": [
-        253.48897402443708,
-        557.4889740244371
+        253.4889678955078,
+        557.4889678955078
       ],
       "flags": {},
       "order": 45,
@@ -1030,7 +1030,7 @@
           "hidden": false,
           "paused": false,
           "params": {
-            "filename": "AdvancedLivePortrait_00237-audio.mp4",
+            "filename": "AdvancedLivePortrait_00247-audio.mp4",
             "subfolder": "",
             "type": "output",
             "format": "video/h264-mp4",
@@ -1046,10 +1046,10 @@
         227,
         1387
       ],
-      "size": [
-        234.10645844742578,
-        70.32601037481754
-      ],
+      "size": {
+        "0": 234.10646057128906,
+        "1": 70.32601165771484
+      },
       "flags": {},
       "order": 11,
       "mode": 0,
@@ -1466,29 +1466,6 @@
       "bgcolor": "#653"
     },
     {
-      "id": 60,
-      "type": "Note",
-      "pos": [
-        -630,
-        616
-      ],
-      "size": {
-        "0": 343.6423645019531,
-        "1": 137.95391845703125
-      },
-      "flags": {},
-      "order": 21,
-      "mode": 0,
-      "properties": {
-        "text": ""
-      },
-      "widgets_values": [
-        "Audio is one of many feature sources, and they are interchangeable.\n\n<--------here's some other feature sources. \n\n\nFYI, in addition to LivePortrait, features can control masks, images, ipadapters, splines, etc.. "
-      ],
-      "color": "#432",
-      "bgcolor": "#653"
-    },
-    {
       "id": 63,
       "type": "AudioFeatureExtractorFirst",
       "pos": [
@@ -1580,10 +1557,10 @@
         746.2026214599609,
         1067
       ],
-      "size": [
-        198.2552032470703,
-        246
-      ],
+      "size": {
+        "0": 198.2552032470703,
+        "1": 246
+      },
       "flags": {},
       "order": 39,
       "mode": 0,
@@ -1696,81 +1673,18 @@
       ]
     },
     {
-      "id": 22,
-      "type": "LoadImage",
-      "pos": [
-        1079,
-        420
-      ],
-      "size": {
-        "0": 315,
-        "1": 314
-      },
-      "flags": {},
-      "order": 22,
-      "mode": 0,
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "links": [
-            17
-          ],
-          "slot_index": 0,
-          "shape": 3
-        },
-        {
-          "name": "MASK",
-          "type": "MASK",
-          "links": null,
-          "slot_index": 1,
-          "shape": 3
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "LoadImage"
-      },
-      "widgets_values": [
-        "source_image.png",
-        "image"
-      ]
-    },
-    {
-      "id": 79,
-      "type": "Note",
-      "pos": [
-        2697,
-        890
-      ],
-      "size": [
-        393.7352089001388,
-        118.73270847674007
-      ],
-      "flags": {},
-      "order": 23,
-      "mode": 0,
-      "properties": {
-        "text": ""
-      },
-      "widgets_values": [
-        "-relative: relative to the parameter value\n-absolute: relative to 0\n\n-the value for a parameter in a previous editor changes the starting position of that part of the expression\n\n-this means a parameter can be modulated multiple times\n"
-      ],
-      "color": "#432",
-      "bgcolor": "#653"
-    },
-    {
       "id": 35,
       "type": "Note",
       "pos": [
         1500,
         1290
       ],
-      "size": [
-        210,
-        58
-      ],
+      "size": {
+        "0": 210,
+        "1": 58
+      },
       "flags": {},
-      "order": 24,
+      "order": 21,
       "mode": 0,
       "properties": {
         "text": ""
@@ -1788,14 +1702,14 @@
         1870,
         1290
       ],
-      "size": [
-        210,
-        58
-      ],
+      "size": {
+        "0": 210,
+        "1": 58
+      },
       "flags": {
         "collapsed": false
       },
-      "order": 25,
+      "order": 22,
       "mode": 0,
       "properties": {
         "text": ""
@@ -1813,14 +1727,14 @@
         2250,
         1290
       ],
-      "size": [
-        210,
-        58
-      ],
+      "size": {
+        "0": 210,
+        "1": 58
+      },
       "flags": {
         "collapsed": false
       },
-      "order": 26,
+      "order": 23,
       "mode": 0,
       "properties": {
         "text": ""
@@ -2069,7 +1983,7 @@
         "1": 130
       },
       "flags": {},
-      "order": 27,
+      "order": 24,
       "mode": 0,
       "outputs": [
         {
@@ -2093,6 +2007,92 @@
         "duration": 7,
         "choose audio to upload": "image"
       }
+    },
+    {
+      "id": 22,
+      "type": "LoadImage",
+      "pos": [
+        1079,
+        420
+      ],
+      "size": {
+        "0": 315,
+        "1": 314
+      },
+      "flags": {},
+      "order": 25,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            17
+          ],
+          "slot_index": 0,
+          "shape": 3
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null,
+          "slot_index": 1,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "source_image.png",
+        "image"
+      ]
+    },
+    {
+      "id": 79,
+      "type": "Note",
+      "pos": [
+        2688,
+        885
+      ],
+      "size": {
+        "0": 393.7351989746094,
+        "1": 118.73271179199219
+      },
+      "flags": {},
+      "order": 26,
+      "mode": 0,
+      "properties": {
+        "text": ""
+      },
+      "widgets_values": [
+        "-relative: relative to the parameter value\n-absolute: relative to 0\n\n-the value for a parameter in a previous editor changes the starting position of that part of the expression\n\n-this means a parameter can be modulated multiple times\n"
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 60,
+      "type": "Note",
+      "pos": [
+        -630,
+        616
+      ],
+      "size": {
+        "0": 343.6423645019531,
+        "1": 137.95391845703125
+      },
+      "flags": {},
+      "order": 27,
+      "mode": 0,
+      "properties": {
+        "text": ""
+      },
+      "widgets_values": [
+        "Audio is one of many feature sources, and they are interchangeable.\n\n<--------here's some other feature sources. \n"
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
     }
   ],
   "links": [
@@ -2316,10 +2316,10 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.8264462809917354,
+      "scale": 0.28966437973668785,
       "offset": [
-        -1500.757376890827,
-        -183.63343267600862
+        2451.9619323967668,
+        801.4337505769607
       ]
     }
   },
