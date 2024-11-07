@@ -1194,31 +1194,6 @@
       "bgcolor": "#653"
     },
     {
-      "id": 23,
-      "type": "Note",
-      "pos": [
-        1490,
-        889
-      ],
-      "size": {
-        "0": 245.08152770996094,
-        "1": 58
-      },
-      "flags": {
-        "collapsed": false
-      },
-      "order": 23,
-      "mode": 0,
-      "properties": {
-        "text": ""
-      },
-      "widgets_values": [
-        "use motion of driving video to control roll\n"
-      ],
-      "color": "#432",
-      "bgcolor": "#653"
-    },
-    {
       "id": 34,
       "type": "MotionFeatureNode",
       "pos": [
@@ -1445,7 +1420,7 @@
           "hidden": false,
           "paused": false,
           "params": {
-            "filename": "AdvancedLivePortrait_00305.mp4",
+            "filename": "AdvancedLivePortrait_00352.mp4",
             "subfolder": "",
             "type": "output",
             "format": "video/h264-mp4",
@@ -1518,106 +1493,6 @@
       ]
     },
     {
-      "id": 26,
-      "type": "FlexExpressionEditor",
-      "pos": [
-        1442,
-        19
-      ],
-      "size": {
-        "0": 336,
-        "1": 830
-      },
-      "flags": {},
-      "order": 32,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "src_image",
-          "type": "IMAGE",
-          "link": null
-        },
-        {
-          "name": "sample_image",
-          "type": "IMAGE",
-          "link": null
-        },
-        {
-          "name": "add_exp",
-          "type": "EXP_DATA",
-          "link": null
-        },
-        {
-          "name": "flex_motion_link",
-          "type": "EDITOR_LINK",
-          "link": 15
-        },
-        {
-          "name": "feature",
-          "type": "FEATURE",
-          "link": 35
-        }
-      ],
-      "outputs": [
-        {
-          "name": "image",
-          "type": "IMAGE",
-          "links": null,
-          "shape": 3
-        },
-        {
-          "name": "flex_motion_link",
-          "type": "EDITOR_LINK",
-          "links": [
-            16
-          ],
-          "shape": 3,
-          "slot_index": 1
-        },
-        {
-          "name": "save_exp",
-          "type": "EXP_DATA",
-          "links": null,
-          "shape": 3
-        },
-        {
-          "name": "command",
-          "type": "STRING",
-          "links": [
-            25
-          ],
-          "shape": 3,
-          "slot_index": 3
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "FlexExpressionEditor"
-      },
-      "widgets_values": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        15,
-        0,
-        0,
-        1,
-        1,
-        "OnlyExpression",
-        1.7,
-        1,
-        1,
-        0,
-        "eee",
-        "absolute"
-      ]
-    },
-    {
       "id": 21,
       "type": "Note",
       "pos": [
@@ -1629,7 +1504,7 @@
         "1": 195.73060607910156
       },
       "flags": {},
-      "order": 24,
+      "order": 23,
       "mode": 0,
       "properties": {
         "text": ""
@@ -1774,13 +1649,138 @@
         "1": 137.95391845703125
       },
       "flags": {},
-      "order": 25,
+      "order": 24,
       "mode": 0,
       "properties": {
         "text": ""
       },
       "widgets_values": [
         "Time and motion are two out of many feature sources, and they are interchangeable.\n\n<--------here's some other feature sources.\ntutorial https://youtu.be/QmWk2xse7pI"
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 26,
+      "type": "FlexExpressionEditor",
+      "pos": [
+        1426,
+        7
+      ],
+      "size": {
+        "0": 336,
+        "1": 830
+      },
+      "flags": {},
+      "order": 32,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "src_image",
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "sample_image",
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "add_exp",
+          "type": "EXP_DATA",
+          "link": null
+        },
+        {
+          "name": "flex_motion_link",
+          "type": "EDITOR_LINK",
+          "link": 15
+        },
+        {
+          "name": "feature",
+          "type": "FEATURE",
+          "link": 35
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": null,
+          "shape": 3
+        },
+        {
+          "name": "flex_motion_link",
+          "type": "EDITOR_LINK",
+          "links": [
+            16
+          ],
+          "shape": 3,
+          "slot_index": 1
+        },
+        {
+          "name": "save_exp",
+          "type": "EXP_DATA",
+          "links": null,
+          "shape": 3
+        },
+        {
+          "name": "command",
+          "type": "STRING",
+          "links": [
+            25
+          ],
+          "shape": 3,
+          "slot_index": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "FlexExpressionEditor"
+      },
+      "widgets_values": [
+        0,
+        20,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        "OnlyExpression",
+        1.7,
+        1,
+        1,
+        0,
+        "rotate_yaw",
+        "absolute"
+      ]
+    },
+    {
+      "id": 23,
+      "type": "Note",
+      "pos": [
+        1490,
+        889
+      ],
+      "size": {
+        "0": 245.08152770996094,
+        "1": 58
+      },
+      "flags": {
+        "collapsed": false
+      },
+      "order": 25,
+      "mode": 0,
+      "properties": {
+        "text": ""
+      },
+      "widgets_values": [
+        "use motion of driving video to control yaw\n"
       ],
       "color": "#432",
       "bgcolor": "#653"
@@ -1943,10 +1943,10 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.826446280991736,
+      "scale": 0.6830134553650705,
       "offset": [
-        702.6005081231212,
-        201.0360639187262
+        45.9245970577685,
+        204.65633914907028
       ]
     }
   },
