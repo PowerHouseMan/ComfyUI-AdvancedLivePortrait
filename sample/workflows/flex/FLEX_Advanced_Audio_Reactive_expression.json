@@ -1030,7 +1030,7 @@
           "hidden": false,
           "paused": false,
           "params": {
-            "filename": "AdvancedLivePortrait_00247-audio.mp4",
+            "filename": "AdvancedLivePortrait_00306-audio.mp4",
             "subfolder": "",
             "type": "output",
             "format": "video/h264-mp4",
@@ -1576,103 +1576,6 @@
       }
     },
     {
-      "id": 15,
-      "type": "FlexExpressionEditor",
-      "pos": [
-        1430,
-        420
-      ],
-      "size": {
-        "0": 338.77764892578125,
-        "1": 816.7449340820312
-      },
-      "flags": {},
-      "order": 38,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "src_image",
-          "type": "IMAGE",
-          "link": 17
-        },
-        {
-          "name": "sample_image",
-          "type": "IMAGE",
-          "link": null
-        },
-        {
-          "name": "add_exp",
-          "type": "EXP_DATA",
-          "link": null
-        },
-        {
-          "name": "flex_motion_link",
-          "type": "EDITOR_LINK",
-          "link": null
-        },
-        {
-          "name": "feature",
-          "type": "FEATURE",
-          "link": 74
-        }
-      ],
-      "outputs": [
-        {
-          "name": "image",
-          "type": "IMAGE",
-          "links": null,
-          "shape": 3
-        },
-        {
-          "name": "flex_motion_link",
-          "type": "EDITOR_LINK",
-          "links": [
-            18
-          ],
-          "shape": 3,
-          "slot_index": 1
-        },
-        {
-          "name": "save_exp",
-          "type": "EXP_DATA",
-          "links": null,
-          "shape": 3,
-          "slot_index": 2
-        },
-        {
-          "name": "command",
-          "type": "STRING",
-          "links": null,
-          "shape": 3
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "FlexExpressionEditor"
-      },
-      "widgets_values": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        -14.5,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        "OnlyExpression",
-        1.7,
-        1,
-        0,
-        "pupil_x",
-        "absolute"
-      ]
-    },
-    {
       "id": 35,
       "type": "Note",
       "pos": [
@@ -1744,204 +1647,6 @@
       ],
       "color": "#432",
       "bgcolor": "#653"
-    },
-    {
-      "id": 62,
-      "type": "FlexExpressionEditor",
-      "pos": [
-        2210,
-        420
-      ],
-      "size": {
-        "0": 336,
-        "1": 806
-      },
-      "flags": {},
-      "order": 43,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "src_image",
-          "type": "IMAGE",
-          "link": null
-        },
-        {
-          "name": "sample_image",
-          "type": "IMAGE",
-          "link": null
-        },
-        {
-          "name": "add_exp",
-          "type": "EXP_DATA",
-          "link": null
-        },
-        {
-          "name": "flex_motion_link",
-          "type": "EDITOR_LINK",
-          "link": 49
-        },
-        {
-          "name": "feature",
-          "type": "FEATURE",
-          "link": 55
-        }
-      ],
-      "outputs": [
-        {
-          "name": "image",
-          "type": "IMAGE",
-          "links": [],
-          "shape": 3,
-          "slot_index": 0
-        },
-        {
-          "name": "flex_motion_link",
-          "type": "EDITOR_LINK",
-          "links": [
-            71
-          ],
-          "shape": 3,
-          "slot_index": 1
-        },
-        {
-          "name": "save_exp",
-          "type": "EXP_DATA",
-          "links": null,
-          "shape": 3
-        },
-        {
-          "name": "command",
-          "type": "STRING",
-          "links": [],
-          "shape": 3,
-          "slot_index": 3
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "FlexExpressionEditor"
-      },
-      "widgets_values": [
-        9,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        "OnlyExpression",
-        1.7,
-        1,
-        0,
-        "rotate_pitch",
-        "relative"
-      ]
-    },
-    {
-      "id": 28,
-      "type": "FlexExpressionEditor",
-      "pos": [
-        1830,
-        420
-      ],
-      "size": {
-        "0": 336,
-        "1": 806
-      },
-      "flags": {},
-      "order": 41,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "src_image",
-          "type": "IMAGE",
-          "link": null
-        },
-        {
-          "name": "sample_image",
-          "type": "IMAGE",
-          "link": null
-        },
-        {
-          "name": "add_exp",
-          "type": "EXP_DATA",
-          "link": null
-        },
-        {
-          "name": "flex_motion_link",
-          "type": "EDITOR_LINK",
-          "link": 18
-        },
-        {
-          "name": "feature",
-          "type": "FEATURE",
-          "link": 45
-        }
-      ],
-      "outputs": [
-        {
-          "name": "image",
-          "type": "IMAGE",
-          "links": [],
-          "shape": 3,
-          "slot_index": 0
-        },
-        {
-          "name": "flex_motion_link",
-          "type": "EDITOR_LINK",
-          "links": [
-            49
-          ],
-          "shape": 3,
-          "slot_index": 1
-        },
-        {
-          "name": "save_exp",
-          "type": "EXP_DATA",
-          "links": null,
-          "shape": 3
-        },
-        {
-          "name": "command",
-          "type": "STRING",
-          "links": [
-            70
-          ],
-          "shape": 3,
-          "slot_index": 3
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "FlexExpressionEditor"
-      },
-      "widgets_values": [
-        0,
-        0,
-        15,
-        0,
-        15,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        "OnlyExpression",
-        1.7,
-        1,
-        0,
-        "rotate_roll",
-        "absolute"
-      ]
     },
     {
       "id": 61,
@@ -2049,29 +1754,6 @@
       ]
     },
     {
-      "id": 79,
-      "type": "Note",
-      "pos": [
-        2688,
-        885
-      ],
-      "size": {
-        "0": 393.7351989746094,
-        "1": 118.73271179199219
-      },
-      "flags": {},
-      "order": 26,
-      "mode": 0,
-      "properties": {
-        "text": ""
-      },
-      "widgets_values": [
-        "-relative: relative to the parameter value\n-absolute: relative to 0\n\n-the value for a parameter in a previous editor changes the starting position of that part of the expression\n\n-this means a parameter can be modulated multiple times\n"
-      ],
-      "color": "#432",
-      "bgcolor": "#653"
-    },
-    {
       "id": 60,
       "type": "Note",
       "pos": [
@@ -2083,13 +1765,334 @@
         "1": 137.95391845703125
       },
       "flags": {},
-      "order": 27,
+      "order": 26,
       "mode": 0,
       "properties": {
         "text": ""
       },
       "widgets_values": [
         "Audio is one of many feature sources, and they are interchangeable.\n\n<--------here's some other feature sources. \n"
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 15,
+      "type": "FlexExpressionEditor",
+      "pos": [
+        1430,
+        420
+      ],
+      "size": [
+        338.77764892578125,
+        830
+      ],
+      "flags": {},
+      "order": 38,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "src_image",
+          "type": "IMAGE",
+          "link": 17
+        },
+        {
+          "name": "sample_image",
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "add_exp",
+          "type": "EXP_DATA",
+          "link": null
+        },
+        {
+          "name": "flex_motion_link",
+          "type": "EDITOR_LINK",
+          "link": null
+        },
+        {
+          "name": "feature",
+          "type": "FEATURE",
+          "link": 74
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": null,
+          "shape": 3
+        },
+        {
+          "name": "flex_motion_link",
+          "type": "EDITOR_LINK",
+          "links": [
+            18
+          ],
+          "shape": 3,
+          "slot_index": 1
+        },
+        {
+          "name": "save_exp",
+          "type": "EXP_DATA",
+          "links": null,
+          "shape": 3,
+          "slot_index": 2
+        },
+        {
+          "name": "command",
+          "type": "STRING",
+          "links": null,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "FlexExpressionEditor"
+      },
+      "widgets_values": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        -14.5,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        "OnlyExpression",
+        1.7,
+        1,
+        1,
+        0,
+        "pupil_x",
+        "absolute"
+      ]
+    },
+    {
+      "id": 28,
+      "type": "FlexExpressionEditor",
+      "pos": [
+        1830,
+        420
+      ],
+      "size": [
+        336,
+        830
+      ],
+      "flags": {},
+      "order": 41,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "src_image",
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "sample_image",
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "add_exp",
+          "type": "EXP_DATA",
+          "link": null
+        },
+        {
+          "name": "flex_motion_link",
+          "type": "EDITOR_LINK",
+          "link": 18
+        },
+        {
+          "name": "feature",
+          "type": "FEATURE",
+          "link": 45
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": [],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "flex_motion_link",
+          "type": "EDITOR_LINK",
+          "links": [
+            49
+          ],
+          "shape": 3,
+          "slot_index": 1
+        },
+        {
+          "name": "save_exp",
+          "type": "EXP_DATA",
+          "links": null,
+          "shape": 3
+        },
+        {
+          "name": "command",
+          "type": "STRING",
+          "links": [
+            70
+          ],
+          "shape": 3,
+          "slot_index": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "FlexExpressionEditor"
+      },
+      "widgets_values": [
+        0,
+        0,
+        15,
+        0,
+        15,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        "OnlyExpression",
+        1.7,
+        1,
+        1,
+        0,
+        "rotate_roll",
+        "absolute"
+      ]
+    },
+    {
+      "id": 62,
+      "type": "FlexExpressionEditor",
+      "pos": [
+        2210,
+        420
+      ],
+      "size": [
+        336,
+        830
+      ],
+      "flags": {},
+      "order": 43,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "src_image",
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "sample_image",
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "add_exp",
+          "type": "EXP_DATA",
+          "link": null
+        },
+        {
+          "name": "flex_motion_link",
+          "type": "EDITOR_LINK",
+          "link": 49
+        },
+        {
+          "name": "feature",
+          "type": "FEATURE",
+          "link": 55
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": [],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "flex_motion_link",
+          "type": "EDITOR_LINK",
+          "links": [
+            71
+          ],
+          "shape": 3,
+          "slot_index": 1
+        },
+        {
+          "name": "save_exp",
+          "type": "EXP_DATA",
+          "links": null,
+          "shape": 3
+        },
+        {
+          "name": "command",
+          "type": "STRING",
+          "links": [],
+          "shape": 3,
+          "slot_index": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "FlexExpressionEditor"
+      },
+      "widgets_values": [
+        9,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        "OnlyExpression",
+        1.7,
+        1,
+        1,
+        0,
+        "rotate_pitch",
+        "absolute"
+      ]
+    },
+    {
+      "id": 79,
+      "type": "Note",
+      "pos": [
+        2688,
+        885
+      ],
+      "size": [
+        486.4787927651523,
+        230.9814456059155
+      ],
+      "flags": {},
+      "order": 27,
+      "mode": 0,
+      "properties": {
+        "text": ""
+      },
+      "widgets_values": [
+        "Flex Parameters:  \n  constrain_min_max: ensures modulated value is kept within bounds of the \n  min and max of the parameter\n  strength: a strength multiplier\n  feature_threshold: minimum feature value to consider\n  feature_param: the expression parameter to modulate\n  feature_mode:\n      -relative: modulation occurs relative to the parameter value\n      -absolute: modulation occurs relative to 0\n\nNotes:\n  The value for a parameter in a previous editor changes the starting position of \n  that \n  parameter in the next editor.\n\n"
       ],
       "color": "#432",
       "bgcolor": "#653"
@@ -2316,10 +2319,10 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.28966437973668785,
+      "scale": 0.620921323059155,
       "offset": [
-        2451.9619323967668,
-        801.4337505769607
+        -680.0229827651518,
+        117.98337439408458
       ]
     }
   },

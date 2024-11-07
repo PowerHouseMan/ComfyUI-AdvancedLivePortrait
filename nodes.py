@@ -973,15 +973,18 @@ class FlexExpressionEditor(ExpressionEditor):
     @classmethod
     def INPUT_TYPES(cls):
         base_inputs = super().INPUT_TYPES()
-        
+        base_inputs["required"].update({
+            "constrain_min_max": ("BOOLEAN", {"default": True})
+        })
         # Rename motion_link to flex_motion_link in optional inputs
         base_inputs["optional"]["flex_motion_link"] = base_inputs["optional"].pop("motion_link")
         base_inputs["optional"].update({
             "feature": ("FEATURE",),
-            "strength": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 1.0, "step": 0.01}),
+            "strength": ("FLOAT", {"default": 1.0, "min": 0.0, "max": 2.0, "step": 0.01}),
             "feature_threshold": ("FLOAT", {"default": 0.0, "min": 0.0, "max": 1.0, "step": 0.01}),
             "feature_param": (cls.get_modifiable_params(), {"default": cls.get_modifiable_params()[0]}),
-            "feature_mode": (["relative", "absolute"], {"default": "relative"}),
+            "feature_mode": (["relative", "absolute"], {"default": "absolute"}),
+             
         })
         
         return base_inputs
@@ -997,7 +1000,7 @@ class FlexExpressionEditor(ExpressionEditor):
         return ["rotate_pitch", "rotate_yaw", "rotate_roll", "blink", "eyebrow", "wink", "pupil_x", "pupil_y",
                 "aaa", "eee", "woo", "smile", "None"]
 
-    def modulate_param(self, base_value, feature_value, strength, mode="relative"):
+    def modulate_param(self, base_value, feature_value, strength, mode="relative", param_name=None, constrain_min_max=True):
         """
         Helper method to modulate a parameter based on feature value.
         
@@ -1006,15 +1009,31 @@ class FlexExpressionEditor(ExpressionEditor):
             feature_value: Feature value to modulate with
             strength: Modulation strength
             mode: Either "relative" or "absolute"
+            param_name: Name of the parameter being modulated (for min/max constraints)
+            constrain_min_max: Whether to constrain the output to the parameter's min/max values
             
         Returns:
             Modulated parameter value
         """
         if mode == "relative":
-            return base_value * (1 + feature_value * strength)
+            modulated_value = base_value * (1 + feature_value * strength)
         else:  # absolute
-            return base_value * feature_value * strength
+            modulated_value = base_value * feature_value * strength
 
+        if constrain_min_max and param_name:
+            # Get parameter constraints from INPUT_TYPES
+            param_info = self.INPUT_TYPES()["required"].get(param_name)
+            if param_info and isinstance(param_info[1], dict):
+                param_min = param_info[1].get("min")
+                param_max = param_info[1].get("max")
+                if param_min is not None:
+                    modulated_value = max(param_min, modulated_value)
+                if param_max is not None:
+                    modulated_value = min(param_max, modulated_value)
+
+        return modulated_value
+
+    #TODO: base class
     def generate_preview_image(self, psi, preview_es):
         """
         Generate preview image from the expression set and PSI data.
@@ -1050,8 +1069,9 @@ class FlexExpressionEditor(ExpressionEditor):
         return out_img, results
 
     def run(self, rotate_pitch, rotate_yaw, rotate_roll, blink, eyebrow, wink, pupil_x, pupil_y, aaa, eee, woo, smile,
-            src_ratio, sample_ratio, sample_parts, crop_factor, src_image=None, sample_image=None, flex_motion_link=None, add_exp=None,
-            feature=None, strength=1.0, feature_threshold=0.0, feature_param="None", feature_mode="relative"):
+            src_ratio, sample_ratio, sample_parts, crop_factor, constrain_min_max, src_image=None, sample_image=None, 
+            flex_motion_link=None, add_exp=None, feature=None, strength=1.0, feature_threshold=0.0, 
+            feature_param="None", feature_mode="relative"):
         rotate_yaw = -rotate_yaw
 
         new_editor_link = []
@@ -1161,7 +1181,14 @@ class FlexExpressionEditor(ExpressionEditor):
             if (feature is not None) and feature_param != "None" and feature_param in params:
                 feature_value = feature_values[idx]
                 if abs(feature_value) >= feature_threshold:
-                    frame_params[feature_param] = self.modulate_param(params[feature_param], feature_value, strength, feature_mode)
+                    frame_params[feature_param] = self.modulate_param(
+                        params[feature_param], 
+                        feature_value, 
+                        strength, 
+                        feature_mode,
+                        feature_param,
+                        constrain_min_max
+                    )
 
             # Calculate the new rotations and add them to existing ones
             new_rotations = apply_params(es_frame.e, frame_params)
