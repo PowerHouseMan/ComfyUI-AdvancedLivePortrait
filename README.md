@@ -1,6 +1,9 @@
 # ComfyUI-AdvancedLivePortrait
 
 ## Update
+11/07/2024
+
+Expressions are feature-reactive (features: audio, MIDI, motion, proximity, and more).
 
 8/21/2024
 
