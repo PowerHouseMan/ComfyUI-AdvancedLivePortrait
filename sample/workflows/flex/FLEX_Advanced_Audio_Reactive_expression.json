@@ -2092,7 +2092,7 @@
         "text": ""
       },
       "widgets_values": [
-        "Audio is one of many feature sources, and they are interchangeable.\n\n<--------here's some other feature sources. \nhttps://youtu.be/QmWk2xse7pI"
+        "Audio is one of many feature sources, and they are interchangeable.\n\n<--------here's some other feature sources. \ntutorial: https://youtu.be/QmWk2xse7pI"
       ],
       "color": "#432",
       "bgcolor": "#653"
@@ -2319,10 +2319,10 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.683013455365071,
+      "scale": 1.2100000000000002,
       "offset": [
-        1626.0060675875104,
-        -67.92280481176567
+        1166.858494860238,
+        -303.268542001848
       ]
     }
   },

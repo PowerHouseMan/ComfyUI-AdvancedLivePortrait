@@ -1780,7 +1780,7 @@
         "text": ""
       },
       "widgets_values": [
-        "Time and motion are two out of many feature sources, and they are interchangeable.\n\n<--------here's some other feature sources.\nhttps://youtu.be/QmWk2xse7pI"
+        "Time and motion are two out of many feature sources, and they are interchangeable.\n\n<--------here's some other feature sources.\ntutorial https://youtu.be/QmWk2xse7pI"
       ],
       "color": "#432",
       "bgcolor": "#653"
@@ -1943,10 +1943,10 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.7513148009015782,
+      "scale": 0.826446280991736,
       "offset": [
-        1512.288595900759,
-        307.6667911089382
+        702.6005081231212,
+        201.0360639187262
       ]
     }
   },
