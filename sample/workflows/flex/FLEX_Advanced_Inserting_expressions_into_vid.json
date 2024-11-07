@@ -1194,29 +1194,6 @@
       "bgcolor": "#653"
     },
     {
-      "id": 48,
-      "type": "Note",
-      "pos": [
-        -1045.8770666284704,
-        227.22407887706152
-      ],
-      "size": {
-        "0": 343.6423645019531,
-        "1": 137.95391845703125
-      },
-      "flags": {},
-      "order": 23,
-      "mode": 0,
-      "properties": {
-        "text": ""
-      },
-      "widgets_values": [
-        "Time and motion are two out of many feature sources, and they are interchangeable.\n\n<--------here's some other feature sources."
-      ],
-      "color": "#432",
-      "bgcolor": "#653"
-    },
-    {
       "id": 23,
       "type": "Note",
       "pos": [
@@ -1230,7 +1207,7 @@
       "flags": {
         "collapsed": false
       },
-      "order": 24,
+      "order": 23,
       "mode": 0,
       "properties": {
         "text": ""
@@ -1647,12 +1624,12 @@
         1809,
         612
       ],
-      "size": [
-        638.537833153212,
-        195.73061228065603
-      ],
+      "size": {
+        "0": 638.537841796875,
+        "1": 195.73060607910156
+      },
       "flags": {},
-      "order": 25,
+      "order": 24,
       "mode": 0,
       "properties": {
         "text": ""
@@ -1784,6 +1761,29 @@
       "properties": {
         "Node name for S&R": "PreviewImage"
       }
+    },
+    {
+      "id": 48,
+      "type": "Note",
+      "pos": [
+        -1045.8770666284704,
+        227.22407887706152
+      ],
+      "size": {
+        "0": 343.6423645019531,
+        "1": 137.95391845703125
+      },
+      "flags": {},
+      "order": 25,
+      "mode": 0,
+      "properties": {
+        "text": ""
+      },
+      "widgets_values": [
+        "Time and motion are two out of many feature sources, and they are interchangeable.\n\n<--------here's some other feature sources.\nhttps://youtu.be/QmWk2xse7pI"
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
     }
   ],
   "links": [
@@ -1943,10 +1943,10 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.5131581182307069,
+      "scale": 0.7513148009015782,
       "offset": [
-        551.2604102007599,
-        505.1531175089383
+        1512.288595900759,
+        307.6667911089382
       ]
     }
   },

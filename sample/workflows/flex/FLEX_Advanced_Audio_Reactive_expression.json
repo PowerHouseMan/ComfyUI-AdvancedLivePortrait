@@ -1754,39 +1754,16 @@
       ]
     },
     {
-      "id": 60,
-      "type": "Note",
-      "pos": [
-        -630,
-        616
-      ],
-      "size": {
-        "0": 343.6423645019531,
-        "1": 137.95391845703125
-      },
-      "flags": {},
-      "order": 26,
-      "mode": 0,
-      "properties": {
-        "text": ""
-      },
-      "widgets_values": [
-        "Audio is one of many feature sources, and they are interchangeable.\n\n<--------here's some other feature sources. \n"
-      ],
-      "color": "#432",
-      "bgcolor": "#653"
-    },
-    {
       "id": 15,
       "type": "FlexExpressionEditor",
       "pos": [
         1430,
         420
       ],
-      "size": [
-        338.77764892578125,
-        830
-      ],
+      "size": {
+        "0": 338.77764892578125,
+        "1": 830
+      },
       "flags": {},
       "order": 38,
       "mode": 0,
@@ -1881,10 +1858,10 @@
         1830,
         420
       ],
-      "size": [
-        336,
-        830
-      ],
+      "size": {
+        "0": 336,
+        "1": 830
+      },
       "flags": {},
       "order": 41,
       "mode": 0,
@@ -1982,10 +1959,10 @@
         2210,
         420
       ],
-      "size": [
-        336,
-        830
-      ],
+      "size": {
+        "0": 336,
+        "1": 830
+      },
       "flags": {},
       "order": 43,
       "mode": 0,
@@ -2081,10 +2058,33 @@
         2688,
         885
       ],
-      "size": [
-        486.4787927651523,
-        230.9814456059155
+      "size": {
+        "0": 486.4787902832031,
+        "1": 230.9814453125
+      },
+      "flags": {},
+      "order": 26,
+      "mode": 0,
+      "properties": {
+        "text": ""
+      },
+      "widgets_values": [
+        "Flex Parameters:  \n  constrain_min_max: ensures modulated value is kept within bounds of the \n  min and max of the parameter\n  strength: a strength multiplier\n  feature_threshold: minimum feature value to consider\n  feature_param: the expression parameter to modulate\n  feature_mode:\n      -relative: modulation occurs relative to the parameter value\n      -absolute: modulation occurs relative to 0\n\nNotes:\n  The value for a parameter in a previous editor changes the starting position of \n  that \n  parameter in the next editor.\n\n"
       ],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 60,
+      "type": "Note",
+      "pos": [
+        -630,
+        616
+      ],
+      "size": {
+        "0": 343.6423645019531,
+        "1": 137.95391845703125
+      },
       "flags": {},
       "order": 27,
       "mode": 0,
@@ -2092,7 +2092,7 @@
         "text": ""
       },
       "widgets_values": [
-        "Flex Parameters:  \n  constrain_min_max: ensures modulated value is kept within bounds of the \n  min and max of the parameter\n  strength: a strength multiplier\n  feature_threshold: minimum feature value to consider\n  feature_param: the expression parameter to modulate\n  feature_mode:\n      -relative: modulation occurs relative to the parameter value\n      -absolute: modulation occurs relative to 0\n\nNotes:\n  The value for a parameter in a previous editor changes the starting position of \n  that \n  parameter in the next editor.\n\n"
+        "Audio is one of many feature sources, and they are interchangeable.\n\n<--------here's some other feature sources. \nhttps://youtu.be/QmWk2xse7pI"
       ],
       "color": "#432",
       "bgcolor": "#653"
@@ -2319,10 +2319,10 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.620921323059155,
+      "scale": 0.683013455365071,
       "offset": [
-        -680.0229827651518,
-        117.98337439408458
+        1626.0060675875104,
+        -67.92280481176567
       ]
     }
   },
