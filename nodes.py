@@ -968,6 +968,14 @@ class FlexExpressionEditor(ExpressionEditor):
     """
     Enhanced version of ExpressionEditor that adds support for feature-based parameter modulation.
     Allows for dynamic modification of facial expressions based on input features (e.g. audio, motion, etc.).
+    
+    TODO: Consider refactoring these methods into the base ExpressionEditor class:
+    - generate_preview_image
+    - process_sample_image
+    - create_expression_set
+    
+    These methods have been implemented here to avoid modifying the original ExpressionEditor
+    until the author can review the changes.
     """
     
     @classmethod
@@ -1068,15 +1076,13 @@ class FlexExpressionEditor(ExpressionEditor):
         
         return out_img, results
 
-    def run(self, rotate_pitch, rotate_yaw, rotate_roll, blink, eyebrow, wink, pupil_x, pupil_y, aaa, eee, woo, smile,
-            src_ratio, sample_ratio, sample_parts, crop_factor, constrain_min_max, src_image=None, sample_image=None, 
-            flex_motion_link=None, add_exp=None, feature=None, strength=1.0, feature_threshold=0.0, 
-            feature_param="None", feature_mode="relative"):
-        rotate_yaw = -rotate_yaw
-
+    #TODO: base class
+    def initialize_psi(self, src_image, motion_link, crop_factor):
+        """Initialize PSI data from source image or motion link"""
         new_editor_link = []
-        if flex_motion_link is not None:
-            self.psi = flex_motion_link[0]
+        
+        if motion_link is not None:
+            self.psi = motion_link[0]
             new_editor_link.append(self.psi)
         elif src_image is not None:
             if id(src_image) != id(self.src_image) or self.crop_factor != crop_factor:
@@ -1085,6 +1091,46 @@ class FlexExpressionEditor(ExpressionEditor):
                 self.src_image = src_image
             new_editor_link.append(self.psi)
         else:
+            return None
+            
+        return new_editor_link
+
+    #TODO: base class   
+    def process_sample_image(self, sample_image, sample_parts, sample_ratio, es, rotate_pitch, rotate_yaw, rotate_roll):
+        """Process sample image and apply transformations"""
+        pipeline = g_engine.get_pipeline()
+        
+        if id(self.sample_image) != id(sample_image):
+            self.sample_image = sample_image
+            d_image_np = (sample_image * 255).byte().numpy()
+            d_face = g_engine.crop_face(d_image_np[0], 1.7)
+            i_d = g_engine.prepare_src_image(d_face)
+            self.d_info = pipeline.get_kp_info(i_d)
+            self.d_info['exp'][0, 5, 0] = 0
+            self.d_info['exp'][0, 5, 1] = 0
+
+        if sample_parts == "OnlyExpression" or sample_parts == "All":
+            es.e += self.d_info['exp'] * sample_ratio
+        if sample_parts == "OnlyRotation" or sample_parts == "All":
+            rotate_pitch += self.d_info['pitch'] * sample_ratio
+            rotate_yaw += self.d_info['yaw'] * sample_ratio
+            rotate_roll += self.d_info['roll'] * sample_ratio
+        elif sample_parts == "OnlyMouth":
+            retargeting(es.e, self.d_info['exp'], sample_ratio, (14, 17, 19, 20))
+        elif sample_parts == "OnlyEyes":
+            retargeting(es.e, self.d_info['exp'], sample_ratio, (1, 2, 11, 13, 15, 16))
+            
+        return rotate_pitch, rotate_yaw, rotate_roll
+
+    def run(self, rotate_pitch, rotate_yaw, rotate_roll, blink, eyebrow, wink, pupil_x, pupil_y, aaa, eee, woo, smile,
+            src_ratio, sample_ratio, sample_parts, crop_factor, constrain_min_max, src_image=None, sample_image=None, 
+            flex_motion_link=None, add_exp=None, feature=None, strength=1.0, feature_threshold=0.0, 
+            feature_param="None", feature_mode="relative"):
+        rotate_yaw = -rotate_yaw
+
+        # Initialize PSI data
+        new_editor_link = self.initialize_psi(src_image, flex_motion_link, crop_factor)
+        if new_editor_link is None:
             return (None, None, None, None)
 
         pipeline = g_engine.get_pipeline()
@@ -1095,26 +1141,9 @@ class FlexExpressionEditor(ExpressionEditor):
 
         # Process sample image if provided
         if sample_image is not None:
-            if id(self.sample_image) != id(sample_image):
-                self.sample_image = sample_image
-                d_image_np = (sample_image * 255).byte().numpy()
-                d_face = g_engine.crop_face(d_image_np[0], 1.7)
-                i_d = g_engine.prepare_src_image(d_face)
-                self.d_info = pipeline.get_kp_info(i_d)
-                self.d_info['exp'][0, 5, 0] = 0
-                self.d_info['exp'][0, 5, 1] = 0
-
-            # Apply sample parts
-            if sample_parts == "OnlyExpression" or sample_parts == "All":
-                es.e += self.d_info['exp'] * sample_ratio
-            if sample_parts == "OnlyRotation" or sample_parts == "All":
-                rotate_pitch += self.d_info['pitch'] * sample_ratio
-                rotate_yaw += self.d_info['yaw'] * sample_ratio
-                rotate_roll += self.d_info['roll'] * sample_ratio
-            elif sample_parts == "OnlyMouth":
-                retargeting(es.e, self.d_info['exp'], sample_ratio, (14, 17, 19, 20))
-            elif sample_parts == "OnlyEyes":
-                retargeting(es.e, self.d_info['exp'], sample_ratio, (1, 2, 11, 13, 15, 16))
+            rotate_pitch, rotate_yaw, rotate_roll = self.process_sample_image(
+                sample_image, sample_parts, sample_ratio, es, rotate_pitch, rotate_yaw, rotate_roll
+            )
 
         # Add any additional expression data
         if add_exp is not None:
