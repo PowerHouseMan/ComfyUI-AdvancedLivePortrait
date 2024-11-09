@@ -885,85 +885,87 @@ class ExpressionEditor:
 
     def run(self, rotate_pitch, rotate_yaw, rotate_roll, blink, eyebrow, wink, pupil_x, pupil_y, aaa, eee, woo, smile,
             src_ratio, sample_ratio, sample_parts, crop_factor, src_image=None, sample_image=None, motion_link=None, add_exp=None):
-        rotate_yaw = -rotate_yaw
+        with torch.autocast(device_type=get_device().type, enabled=get_device().type == "cuda"):
 
-        new_editor_link = None
-        if motion_link != None:
-            self.psi = motion_link[0]
-            new_editor_link = motion_link.copy()
-        elif src_image != None:
-            if id(src_image) != id(self.src_image) or self.crop_factor != crop_factor:
-                self.crop_factor = crop_factor
-                self.psi = g_engine.prepare_source(src_image, crop_factor)
-                self.src_image = src_image
-            new_editor_link = []
-            new_editor_link.append(self.psi)
-        else:
-            return (None,None)
+            rotate_yaw = -rotate_yaw
 
-        pipeline = g_engine.get_pipeline()
+            new_editor_link = None
+            if motion_link != None:
+                self.psi = motion_link[0]
+                new_editor_link = motion_link.copy()
+            elif src_image != None:
+                if id(src_image) != id(self.src_image) or self.crop_factor != crop_factor:
+                    self.crop_factor = crop_factor
+                    self.psi = g_engine.prepare_source(src_image, crop_factor)
+                    self.src_image = src_image
+                new_editor_link = []
+                new_editor_link.append(self.psi)
+            else:
+                return (None,None)
 
-        psi = self.psi
-        s_info = psi.x_s_info
-        #delta_new = copy.deepcopy()
-        s_exp = s_info['exp'] * src_ratio
-        s_exp[0, 5] = s_info['exp'][0, 5]
-        s_exp += s_info['kp']
+            pipeline = g_engine.get_pipeline()
 
-        es = ExpressionSet()
+            psi = self.psi
+            s_info = psi.x_s_info
+            #delta_new = copy.deepcopy()
+            s_exp = s_info['exp'] * src_ratio
+            s_exp[0, 5] = s_info['exp'][0, 5]
+            s_exp += s_info['kp']
 
-        if sample_image != None:
-            if id(self.sample_image) != id(sample_image):
-                self.sample_image = sample_image
-                d_image_np = (sample_image * 255).byte().numpy()
-                d_face = g_engine.crop_face(d_image_np[0], 1.7)
-                i_d = g_engine.prepare_src_image(d_face)
-                self.d_info = pipeline.get_kp_info(i_d)
-                self.d_info['exp'][0, 5, 0] = 0
-                self.d_info['exp'][0, 5, 1] = 0
+            es = ExpressionSet()
 
-            # "OnlyExpression", "OnlyRotation", "OnlyMouth", "OnlyEyes", "All"
-            if sample_parts == "OnlyExpression" or sample_parts == "All":
-                es.e += self.d_info['exp'] * sample_ratio
-            if sample_parts == "OnlyRotation" or sample_parts == "All":
-                rotate_pitch += self.d_info['pitch'] * sample_ratio
-                rotate_yaw += self.d_info['yaw'] * sample_ratio
-                rotate_roll += self.d_info['roll'] * sample_ratio
-            elif sample_parts == "OnlyMouth":
-                retargeting(es.e, self.d_info['exp'], sample_ratio, (14, 17, 19, 20))
-            elif sample_parts == "OnlyEyes":
-                retargeting(es.e, self.d_info['exp'], sample_ratio, (1, 2, 11, 13, 15, 16))
+            if sample_image != None:
+                if id(self.sample_image) != id(sample_image):
+                    self.sample_image = sample_image
+                    d_image_np = (sample_image * 255).byte().numpy()
+                    d_face = g_engine.crop_face(d_image_np[0], 1.7)
+                    i_d = g_engine.prepare_src_image(d_face)
+                    self.d_info = pipeline.get_kp_info(i_d)
+                    self.d_info['exp'][0, 5, 0] = 0
+                    self.d_info['exp'][0, 5, 1] = 0
 
-        es.r = g_engine.calc_fe(es.e, blink, eyebrow, wink, pupil_x, pupil_y, aaa, eee, woo, smile,
-                                  rotate_pitch, rotate_yaw, rotate_roll)
+                # "OnlyExpression", "OnlyRotation", "OnlyMouth", "OnlyEyes", "All"
+                if sample_parts == "OnlyExpression" or sample_parts == "All":
+                    es.e += self.d_info['exp'] * sample_ratio
+                if sample_parts == "OnlyRotation" or sample_parts == "All":
+                    rotate_pitch += self.d_info['pitch'] * sample_ratio
+                    rotate_yaw += self.d_info['yaw'] * sample_ratio
+                    rotate_roll += self.d_info['roll'] * sample_ratio
+                elif sample_parts == "OnlyMouth":
+                    retargeting(es.e, self.d_info['exp'], sample_ratio, (14, 17, 19, 20))
+                elif sample_parts == "OnlyEyes":
+                    retargeting(es.e, self.d_info['exp'], sample_ratio, (1, 2, 11, 13, 15, 16))
 
-        if add_exp != None:
-            es.add(add_exp)
+            es.r = g_engine.calc_fe(es.e, blink, eyebrow, wink, pupil_x, pupil_y, aaa, eee, woo, smile,
+                                      rotate_pitch, rotate_yaw, rotate_roll)
 
-        new_rotate = get_rotation_matrix(s_info['pitch'] + es.r[0], s_info['yaw'] + es.r[1],
-                                         s_info['roll'] + es.r[2])
-        x_d_new = (s_info['scale'] * (1 + es.s)) * ((s_exp + es.e) @ new_rotate) + s_info['t']
+            if add_exp != None:
+                es.add(add_exp)
 
-        x_d_new = pipeline.stitching(psi.x_s_user, x_d_new)
+            new_rotate = get_rotation_matrix(s_info['pitch'] + es.r[0], s_info['yaw'] + es.r[1],
+                                             s_info['roll'] + es.r[2])
+            x_d_new = (s_info['scale'] * (1 + es.s)) * ((s_exp + es.e) @ new_rotate) + s_info['t']
 
-        crop_out = pipeline.warp_decode(psi.f_s_user, psi.x_s_user, x_d_new)
-        crop_out = pipeline.parse_output(crop_out['out'])[0]
+            x_d_new = pipeline.stitching(psi.x_s_user, x_d_new)
 
-        crop_with_fullsize = cv2.warpAffine(crop_out, psi.crop_trans_m, get_rgb_size(psi.src_rgb), cv2.INTER_LINEAR)
-        out = np.clip(psi.mask_ori * crop_with_fullsize + (1 - psi.mask_ori) * psi.src_rgb, 0, 255).astype(np.uint8)
+            crop_out = pipeline.warp_decode(psi.f_s_user, psi.x_s_user, x_d_new)
+            crop_out = pipeline.parse_output(crop_out['out'])[0]
 
-        out_img = pil2tensor(out)
+            crop_with_fullsize = cv2.warpAffine(crop_out, psi.crop_trans_m, get_rgb_size(psi.src_rgb), cv2.INTER_LINEAR)
+            out = np.clip(psi.mask_ori * crop_with_fullsize + (1 - psi.mask_ori) * psi.src_rgb, 0, 255).astype(np.uint8)
 
-        filename = g_engine.get_temp_img_name() #"fe_edit_preview.png"
-        folder_paths.get_save_image_path(filename, folder_paths.get_temp_directory())
-        img = Image.fromarray(crop_out)
-        img.save(os.path.join(folder_paths.get_temp_directory(), filename), compress_level=1)
-        results = list()
-        results.append({"filename": filename, "type": "temp"})
+            out_img = pil2tensor(out)
 
-        new_editor_link.append(es)
+            filename = g_engine.get_temp_img_name() #"fe_edit_preview.png"
+            folder_paths.get_save_image_path(filename, folder_paths.get_temp_directory())
+            img = Image.fromarray(crop_out)
+            img.save(os.path.join(folder_paths.get_temp_directory(), filename), compress_level=1)
+            results = list()
+            results.append({"filename": filename, "type": "temp"})
 
-        return {"ui": {"images": results}, "result": (out_img, new_editor_link, es)}
+            new_editor_link.append(es)
+
+            return {"ui": {"images": results}, "result": (out_img, new_editor_link, es)}
 
 NODE_CLASS_MAPPINGS = {
     "AdvancedLivePortrait": AdvancedLivePortrait,
