@@ -11,6 +11,7 @@ import copy
 import dill
 import yaml
 from ultralytics import YOLO
+import functools
 
 current_file_path = os.path.abspath(__file__)
 current_directory = os.path.dirname(current_file_path)
@@ -27,6 +28,7 @@ from .LivePortrait.modules.stitching_retargeting_network import StitchingRetarge
 from collections import OrderedDict
 
 cur_device = None
+@functools.lru_cache
 def get_device():
     global cur_device
     if cur_device == None:
