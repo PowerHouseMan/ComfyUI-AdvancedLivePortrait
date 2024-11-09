@@ -725,110 +725,112 @@ class AdvancedLivePortrait:
 
     def run(self, retargeting_eyes, retargeting_mouth, turn_on, tracking_src_vid, animate_without_vid, command, crop_factor,
             src_images=None, driving_images=None, motion_link=None):
-        if turn_on == False: return (None,None)
-        src_length = 1
+        with torch.autocast(device_type=get_device().type, enabled=get_device().type == "cuda"):
 
-        if src_images == None:
-            if motion_link != None:
-                self.psi_list = [motion_link[0]]
-            else: return (None,None)
+            if turn_on == False: return (None,None)
+            src_length = 1
 
-        if src_images != None:
-            src_length = len(src_images)
-            if id(src_images) != id(self.src_images) or self.crop_factor != crop_factor:
-                self.crop_factor = crop_factor
-                self.src_images = src_images
-                if 1 < src_length:
-                    self.psi_list = g_engine.prepare_source(src_images, crop_factor, True, tracking_src_vid)
-                else:
-                    self.psi_list = [g_engine.prepare_source(src_images, crop_factor)]
+            if src_images == None:
+                if motion_link != None:
+                    self.psi_list = [motion_link[0]]
+                else: return (None,None)
+
+            if src_images != None:
+                src_length = len(src_images)
+                if id(src_images) != id(self.src_images) or self.crop_factor != crop_factor:
+                    self.crop_factor = crop_factor
+                    self.src_images = src_images
+                    if 1 < src_length:
+                        self.psi_list = g_engine.prepare_source(src_images, crop_factor, True, tracking_src_vid)
+                    else:
+                        self.psi_list = [g_engine.prepare_source(src_images, crop_factor)]
 
 
-        cmd_list, cmd_length = self.parsing_command(command, motion_link)
-        if cmd_list == None: return (None,None)
-        cmd_idx = 0
+            cmd_list, cmd_length = self.parsing_command(command, motion_link)
+            if cmd_list == None: return (None,None)
+            cmd_idx = 0
 
-        driving_length = 0
-        if driving_images is not None:
-            if id(driving_images) != id(self.driving_images):
-                self.driving_images = driving_images
-                self.driving_values = g_engine.prepare_driving_video(driving_images)
-            driving_length = len(self.driving_values)
+            driving_length = 0
+            if driving_images is not None:
+                if id(driving_images) != id(self.driving_images):
+                    self.driving_images = driving_images
+                    self.driving_values = g_engine.prepare_driving_video(driving_images)
+                driving_length = len(self.driving_values)
 
-        total_length = max(driving_length, src_length)
+            total_length = max(driving_length, src_length)
 
-        if animate_without_vid:
-            total_length = max(total_length, cmd_length)
+            if animate_without_vid:
+                total_length = max(total_length, cmd_length)
 
-        c_i_es = ExpressionSet()
-        c_o_es = ExpressionSet()
-        d_0_es = None
-        out_list = []
+            c_i_es = ExpressionSet()
+            c_o_es = ExpressionSet()
+            d_0_es = None
+            out_list = []
 
-        psi = None
-        pipeline = g_engine.get_pipeline()
-        for i in range(total_length):
+            psi = None
+            pipeline = g_engine.get_pipeline()
+            for i in range(total_length):
 
-            if i < src_length:
-                psi = self.psi_list[i]
-                s_info = psi.x_s_info
-                s_es = ExpressionSet(erst=(s_info['kp'] + s_info['exp'], torch.Tensor([0, 0, 0]), s_info['scale'], s_info['t']))
+                if i < src_length:
+                    psi = self.psi_list[i]
+                    s_info = psi.x_s_info
+                    s_es = ExpressionSet(erst=(s_info['kp'] + s_info['exp'], torch.Tensor([0, 0, 0]), s_info['scale'], s_info['t']))
 
-            new_es = ExpressionSet(es = s_es)
+                new_es = ExpressionSet(es = s_es)
 
-            if i < cmd_length:
-                cmd = cmd_list[cmd_idx]
-                if 0 < cmd.change:
-                    cmd.change -= 1
-                    c_i_es.add(cmd.es)
-                    c_i_es.sub(c_o_es)
-                elif 0 < cmd.keep:
-                    cmd.keep -= 1
+                if i < cmd_length:
+                    cmd = cmd_list[cmd_idx]
+                    if 0 < cmd.change:
+                        cmd.change -= 1
+                        c_i_es.add(cmd.es)
+                        c_i_es.sub(c_o_es)
+                    elif 0 < cmd.keep:
+                        cmd.keep -= 1
 
-                new_es.add(c_i_es)
+                    new_es.add(c_i_es)
 
-                if cmd.change == 0 and cmd.keep == 0:
-                    cmd_idx += 1
-                    if cmd_idx < len(cmd_list):
-                        c_o_es = ExpressionSet(es = c_i_es)
-                        cmd = cmd_list[cmd_idx]
-                        c_o_es.div(cmd.change)
-            elif 0 < cmd_length:
-                new_es.add(c_i_es)
+                    if cmd.change == 0 and cmd.keep == 0:
+                        cmd_idx += 1
+                        if cmd_idx < len(cmd_list):
+                            c_o_es = ExpressionSet(es = c_i_es)
+                            cmd = cmd_list[cmd_idx]
+                            c_o_es.div(cmd.change)
+                elif 0 < cmd_length:
+                    new_es.add(c_i_es)
 
-            if i < driving_length:
-                d_i_info = self.driving_values[i]
-                d_i_r = torch.Tensor([d_i_info['pitch'], d_i_info['yaw'], d_i_info['roll']])
+                if i < driving_length:
+                    d_i_info = self.driving_values[i]
+                    d_i_r = torch.Tensor([d_i_info['pitch'], d_i_info['yaw'], d_i_info['roll']])
 
-                if d_0_es is None:
-                    d_0_es = ExpressionSet(erst = (d_i_info['exp'], d_i_r, d_i_info['scale'], d_i_info['t']))
+                    if d_0_es is None:
+                        d_0_es = ExpressionSet(erst = (d_i_info['exp'], d_i_r, d_i_info['scale'], d_i_info['t']))
 
-                    retargeting(s_es.e, d_0_es.e, retargeting_eyes, (11, 13, 15, 16))
-                    retargeting(s_es.e, d_0_es.e, retargeting_mouth, (14, 17, 19, 20))
+                        retargeting(s_es.e, d_0_es.e, retargeting_eyes, (11, 13, 15, 16))
+                        retargeting(s_es.e, d_0_es.e, retargeting_mouth, (14, 17, 19, 20))
 
-                new_es.e += d_i_info['exp'] - d_0_es.e
-                new_es.r += d_i_r - d_0_es.r
-                new_es.t += d_i_info['t'] - d_0_es.t
+                    new_es.e += d_i_info['exp'] - d_0_es.e
+                    new_es.r += d_i_r - d_0_es.r
+                    new_es.t += d_i_info['t'] - d_0_es.t
 
-            r_new = get_rotation_matrix(
-                s_info['pitch'] + new_es.r[0], s_info['yaw'] + new_es.r[1], s_info['roll'] + new_es.r[2])
-            d_new = new_es.s * (new_es.e @ r_new) + new_es.t
-            d_new = pipeline.stitching(psi.x_s_user, d_new)
-            crop_out = pipeline.warp_decode(psi.f_s_user, psi.x_s_user, d_new)
-            crop_out = pipeline.parse_output(crop_out['out'])[0]
+                r_new = get_rotation_matrix(
+                    s_info['pitch'] + new_es.r[0], s_info['yaw'] + new_es.r[1], s_info['roll'] + new_es.r[2])
+                d_new = new_es.s * (new_es.e @ r_new) + new_es.t
+                d_new = pipeline.stitching(psi.x_s_user, d_new)
+                crop_out = pipeline.warp_decode(psi.f_s_user, psi.x_s_user, d_new)
+                crop_out = pipeline.parse_output(crop_out['out'])[0]
 
-            crop_with_fullsize = cv2.warpAffine(crop_out, psi.crop_trans_m, get_rgb_size(psi.src_rgb),
-                                                cv2.INTER_LINEAR)
-            out = np.clip(psi.mask_ori * crop_with_fullsize + (1 - psi.mask_ori) * psi.src_rgb, 0, 255).astype(
-                np.uint8)
-            out_list.append(out)
+                crop_with_fullsize = cv2.warpAffine(crop_out, psi.crop_trans_m, get_rgb_size(psi.src_rgb),
+                                                    cv2.INTER_LINEAR)
+                out = np.clip(psi.mask_ori * crop_with_fullsize + (1 - psi.mask_ori) * psi.src_rgb, 0, 255).astype(
+                    np.uint8)
+                out_list.append(out)
 
-            self.pbar.update_absolute(i+1, total_length, ("PNG", Image.fromarray(crop_out), None))
+                self.pbar.update_absolute(i+1, total_length, ("PNG", Image.fromarray(crop_out), None))
 
-        if len(out_list) == 0: return (None,)
+            if len(out_list) == 0: return (None,)
 
-        out_imgs = torch.cat([pil2tensor(img_rgb) for img_rgb in out_list])
-        return (out_imgs,)
+            out_imgs = torch.cat([pil2tensor(img_rgb) for img_rgb in out_list])
+            return (out_imgs,)
 
 class ExpressionEditor:
     def __init__(self):
