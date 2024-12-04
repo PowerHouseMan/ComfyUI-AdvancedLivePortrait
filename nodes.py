@@ -530,7 +530,7 @@ if os.path.exists(exp_data_dir) and not os.path.isdir(exp_data_dir):
     
     os.remove(exp_data_dir)    
     
-os.mkdir(exp_data_dir, exist_ok=True)
+os.makedirs(exp_data_dir, exist_ok=True)
 
 class SaveExpData:
     @classmethod
