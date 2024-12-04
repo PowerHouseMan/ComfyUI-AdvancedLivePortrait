@@ -525,8 +525,13 @@ def logging_time(original_fn):
 
 #exp_data_dir = os.path.join(current_directory, "exp_data")
 exp_data_dir = os.path.join(folder_paths.output_directory, "exp_data")
-if os.path.isdir(exp_data_dir) == False:
-    os.mkdir(exp_data_dir)
+if not os.path.isdir(exp_data_dir):
+    print(f"{exp_data_dir} exists but it is not a directory. Removing it.")
+    
+    os.remove(exp_data_dir)    
+    
+os.mkdir(exp_data_dir, exist_ok=True)
+
 class SaveExpData:
     @classmethod
     def INPUT_TYPES(s):
